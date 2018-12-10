@@ -1,32 +1,84 @@
-.App {
+.app__title {
+  text-align: center;
+  margin: 50px 0;
+  font-size: 60px;
+}
+
+.app__desc,
+.app__start {
+  margin: 50px 0;
   text-align: center;
 }
-
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
+.app__start {
+  margin: 80px 0;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.app__system-wrap {
+  width: 700px;
+  height: 500px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background: #fafafa;
+  border-radius: 2px;
+  overflow: auto;
+}
+.app__system-wrap-title {
+  margin: 0;
+  padding: 10px 20px;
+  border-bottom: 1px solid #eee;
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+}
+.app__system-wrap-body {
+  margin-top: 54px;
+  overflow: auto;
+  height: 450px;
 }
 
-.App-link {
-  color: #61dafb;
+.app__text-editor-wrap {
+  display: block;
+  margin: auto;
+  max-width: 740px;
+  border-radius: 10px;
+  box-shadow: rgba(0, 0, 0, 0.8) 0px 20px 70px;
+  clear: both;
+  overflow: hidden;
+  -webkit-transition: all 0.5s ease-out;
+  -moz-transition: all 0.5s ease-out;
+  -ms-transition: all 0.5s ease-out;
+  -o-transition: all 0.5s ease-out;
+  transition: all 0.5s ease-out;
 }
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.app__text-body {
+  height: 120px;
+  background-color: rgba(0, 0, 0, 0.85);
+  padding: 10px;
+  color: #f0f0f0;
+  text-shadow: #000 0px 1px 0px;
+  font-family: 'Consolas', 'Courier New', 'Courier';
+  font-weight: bold;
+  text-align: left;
+  overflow: hidden;
+  -webkit-transition: all 0.5s ease-out;
+  -moz-transition: all 0.5s ease-out;
+  -ms-transition: all 0.5s ease-out;
+  -o-transition: all 0.5s ease-out;
+  transition: all 0.5s ease-out;
+}
+.app__title-bar {
+  padding: 5px 0;
+  font-family: 'Lucida Grande', sans-serif;
+  font-size: 0.75em;
+  text-align: center;
+  text-shadow: rgba(255, 255, 255, 0.8) 0px 1px 0px;
+  background-color: #f8f8f8;
+  background-image: -webkit-linear-gradient(top, #e8e8e8, #bcbbbc);
+  background-image: -moz-linear-gradient(top, #e8e8e8, #bcbbbc);
+  background-image: linear-gradient(top, #e8e8e8, #bcbbbc);
+  box-shadow: inset rgba(255, 255, 255, 0.7) 0px 1px 1px;
+  border-bottom: #6a6a6a 1px solid;
 }

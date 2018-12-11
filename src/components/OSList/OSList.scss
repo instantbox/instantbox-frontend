@@ -1,0 +1,18 @@
+.os-list {
+  display: flex;
+  &__os {
+    width: 200px;
+    border-right: 1px solid #c0c0c0;
+    height: 100%;
+  }
+  &__version {
+    flex: 1;
+    padding: 16px;
+  }
+  &__os-btn {
+    transition: 0.3s;
+    &--selected {
+      background: #ebebeb !important;
+    }
+  }
+}

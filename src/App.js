@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './App.css';
+import './App.scss';
 import Button from '@material-ui/core/Button';
 import Typed from 'typed.js';
 import Modal from '@material-ui/core/Modal';
@@ -13,353 +13,41 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Typography from '@material-ui/core/Typography';
 
+import Drawer from '@material-ui/core/Drawer';
+import Divider from '@material-ui/core/Divider';
+
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+import OSList from './components/OSList';
 
-const systemList = [
-  {
-    label: 'Arch Linux',
-    value: 'Arch Linux',
-    subList: [
-      {
-        label: '2018.12.01 (x86_64, CLI-only)'
-      }
-    ]
-  },
-  {
-    label: 'Debian',
-    value: 'Debian',
-    subList: [
-      {
-        label: '9.6.0 (amd64, CD installer with xfce)'
-      },
-      {
-        label: '9.6.0 (i386, CD installer with xfce)'
-      },
-      {
-        label: '9.6.0 (amd64, DVD installer (Part 3)) 1'
-      },
-      {
-        label: '9.6.0 (amd64, DVD installer (Part 3)) 2'
-      },
-      {
-        label: '9.6.0 (amd64, DVD installer (Part 2))'
-      },
-      {
-        label: '9.6.0 (amd64, DVD installer (Part 1))'
-      },
-      {
-        label: '9.6.0 (i386, DVD installer (Part 3))'
-      },
-      {
-        label: '9.6.0 (i386, DVD installer (Part 2))'
-      },
-      {
-        label: '9.6.0 (i386, DVD installer (Part 1))'
-      },
-      {
-        label: '9.6.0 (amd64, Live CD with xfce)'
-      },
-      {
-        label: '9.6.0 (amd64, Live CD with mate)'
-      },
-      {
-        label: '9.6.0 (amd64, Live CD with lxde)'
-      },
-      {
-        label: '9.6.0 (amd64, Live CD with kde)'
-      },
-      {
-        label: '9.6.0 (amd64, Live CD with gnome)'
-      },
-      {
-        label: '9.6.0 (amd64, Live CD with cinnamon)'
-      },
-      {
-        label: '9.6.0 (i386, Live CD with xfce)'
-      },
-      {
-        label: '9.6.0 (i386, Live CD with mate)'
-      },
-      {
-        label: '9.6.0 (i386, Live CD with lxde)'
-      },
-      {
-        label: '9.6.0 (i386, Live CD with kde)'
-      },
-      {
-        label: '9.6.0 (i386, Live CD with gnome)'
-      },
-      {
-        label: '9.6.0 (i386, Live CD with cinnamon)'
-      }
-    ]
-  },
-  {
-    label: 'CentOS',
-    value: 'CentOS',
-    subList: [
-      {
-        label: '7 (x86_64, NetInstall) 1'
-      },
-      {
-        label: '7 (x86_64, NetInstall) 2'
-      },
-      {
-        label: '7 (x86_64, Minimal) 1'
-      },
-      {
-        label: '7 (x86_64, Minimal) 2'
-      },
-      {
-        label: '7 (x86_64, LiveKDE) 1'
-      },
-      {
-        label: '7 (x86_64, LiveKDE) 2'
-      },
-      {
-        label: '7 (x86_64, LiveGNOME) 1'
-      },
-      {
-        label: '7 (x86_64, LiveGNOME) 2'
-      },
-      {
-        label: '7 (x86_64, Everything) 1'
-      },
-      {
-        label: '7 (x86_64, Everything) 2'
-      },
-      {
-        label: '7 (x86_64, DVD) 1'
-      },
-      {
-        label: '7 (x86_64, DVD) 2'
-      },
-      {
-        label: '6.10 (x86_64, netinstall)'
-      },
-      {
-        label: '6.10 (x86_64, minimal)'
-      },
-      {
-        label: '6.10 (x86_64, bin-DVD2)'
-      },
-      {
-        label: '6.10 (x86_64, bin-DVD1)'
-      },
-      {
-        label: '6.10 (x86_64, bin-DVD)'
-      },
-      {
-        label: '6.10 (i386, netinstall)'
-      },
-      {
-        label: '6.10 (i386, minimal)'
-      },
-      {
-        label: '6.10 (i386, bin-DVD2)'
-      },
-      {
-        label: '6.10 (i386, bin-DVD1)'
-      },
-      {
-        label: '6.10 (i386, bin-DVD)'
-      }
-    ]
-  },
-  {
-    label: 'Fedora',
-    value: 'Fedora',
-    subList: [
-      {
-        label: '29 (x86_64, Workstation)'
-      },
-      {
-        label: '29 (x86_64, KDE)'
-      },
-      {
-        label: '28 (x86_64, Xfce)'
-      },
-      {
-        label: '28 (x86_64, Workstation)'
-      },
-      {
-        label: '28 (x86_64, KDE)'
-      }
-    ]
-  },
-  {
-    label: 'Ubuntu',
-    value: 'Ubuntu',
-    subList: [
-      {
-        label: '18.10 (amd64, Desktop LiveDVD)'
-      },
-      {
-        label: '18.04.1 (amd64, Desktop LiveDVD)'
-      },
-      {
-        label: '16.04.5 (amd64, Desktop LiveDVD)'
-      },
-      {
-        label: '16.04.5 (i386, Desktop LiveDVD)'
-      },
-      {
-        label: '14.04.5 (amd64, Desktop LiveDVD)'
-      },
-      {
-        label: '14.04.5 (i386, Desktop LiveDVD)'
-      },
-      {
-        label: '18.10 (amd64, Server)'
-      },
-      {
-        label: '18.04.1.0 (amd64, Server)'
-      },
-      {
-        label: '18.04.1 (amd64, Server)'
-      },
-      {
-        label: '16.04.5 (amd64, Server)'
-      },
-      {
-        label: '16.04.5 (i386, Server)'
-      },
-      {
-        label: '14.04.5 (amd64, Server)'
-      },
-      {
-        label: '14.04.5 (i386, Server)'
-      },
-      {
-        label: '12.04.5 (amd64, Server)'
-      },
-      {
-        label: '12.04.5 (i386, Server)'
-      }
-    ]
-  },
-  {
-    label: 'Ubuntu 衍生版',
-    value: 'Ubuntu 衍生版',
-    subList: [
-      {
-        label: 'Ubuntu Kylin 18.10 (amd64)'
-      },
-      {
-        label: 'Kubuntu 18.10 (amd64)'
-      },
-      {
-        label: 'Lubuntu 18.10 (amd64)'
-      },
-      {
-        label: 'Lubuntu 18.10 (i386)'
-      },
-      {
-        label: 'Xubuntu 18.10 (amd64)'
-      },
-      {
-        label: 'Xubuntu 18.10 (i386)'
-      },
-      {
-        label: 'Ubuntu Gnome 16.04.5 (amd64)'
-      },
-      {
-        label: 'Ubuntu Gnome 16.04.5 (i386)'
-      },
-      {
-        label: 'Ubuntu Mate 18.10 (amd64)'
-      }
-    ]
-  },
-  {
-    label: 'Deepin',
-    value: 'Deepin',
-    subList: [
-      {
-        label: '15.8 (amd64)'
-      }
-    ]
-  },
-  {
-    label: 'LineageOS',
-    value: 'LineageOS',
-    subList: [
-      {
-        label: '20181126 (otus, 14.1)'
-      },
-      {
-        label: '20181130 (bardockpro, 15.1)'
-      },
-      {
-        label: '20181129 (r5, 15.1)'
-      },
-      {
-        label: '20181110 (pme, 14.1)'
-      },
-      {
-        label: '20181111 (v1awifi, 14.1) 1'
-      },
-      {
-        label: '20181111 (v1awifi, 14.1) 2'
-      },
-      {
-        label: '20181031 (d850, 14.1)'
-      },
-      {
-        label: '20181130 (angler, 15.1)'
-      },
-      {
-        label: '20181107 (addison, 14.1)'
-      },
-      {
-        label: '20181129 (santoni, 15.1)'
-      }
-    ]
-  },
-  {
-    label: 'openSUSE',
-    value: 'openSUSE',
-    subList: [
-      {
-        label: '42.3 (x86_64)'
-      },
-      {
-        label: '42.2 (x86_64)'
-      },
-      {
-        label: '15.0 (x86_64)'
-      },
-      {
-        label: 'Tumbleweed (x86_64, KDE-Live)'
-      },
-      {
-        label: 'Tumbleweed (x86_64, GNOME-Live)'
-      },
-      {
-        label: 'Tumbleweed (x86_64, DVD)'
-      },
-      {
-        label: 'Tumbleweed (i686, KDE-Live)'
-      },
-      {
-        label: 'Tumbleweed (i686, GNOME-Live)'
-      },
-      {
-        label: 'Tumbleweed (i586, DVD)'
-      }
-    ]
-  }
-];
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import { getOSList, getOSUrl } from './util/api';
+import Input from '@material-ui/core/Input';
+import InputAdornment from '@material-ui/core/InputAdornment';
+
+import TextField from '@material-ui/core/TextField';
 
 class App extends Component {
   state = {
     open: false,
     expanded: '',
-    selectedSystem: 'Arch Linux'
+    selectedSystem: 'Arch Linux',
+    osList: [],
+    selectedVersion: {},
+    selectedOS: {},
+    timeout: 0,
+    cpu: 1,
+    memory: 0.5,
+    port: 80
   };
 
   componentDidMount = () => {
+    this.getOSList();
+
     this.typed = new Typed('.app__desc-content', {
       strings: [
         `Want to experiment with something on a Linux distribution? Let's start!`
@@ -368,20 +56,82 @@ class App extends Component {
     });
   };
 
-  handleStartClick = () => {
-    this.setState({ open: true });
+  getOSList = async () => {
+    this.p1 = getOSList();
+    let res;
+    try {
+      res = await this.p1.promise;
+    } catch (err) {
+      return console.error(err);
+    }
+    const osList = res;
+    if (osList.length) {
+      osList[0].selected = true;
+    }
+    this.setState({ osList });
   };
+
+  handleStartClick = () => {};
 
   handleClose = () => {
     this.setState({ open: false });
   };
 
-  handleSystemChange = e => {
-    console.log('e:', e);
+  handleOSSelect = selectedOS => {
+    const osList = [...this.state.osList];
+
+    const i = osList.findIndex(os => selectedOS.label === os.label);
+
+    osList.forEach((os, j) => {
+      if (i === j) {
+        os.selected = false;
+      }
+      os.selected = i === j;
+    });
+    this.setState({ osList });
+  };
+
+  handleOSVersionSelect = (selectedOS, selectedVersion) => {
+    this.setState({
+      open: true,
+      selectedOS,
+      selectedVersion
+    });
+  };
+
+  handleDialogConfirm = async () => {
+    const { timeout, cpu, memory, selectedVersion, port } = this.state;
+    const t = Math.floor(new Date().getTime() / 1000) + timeout * 60;
+    this.p2 = getOSUrl(selectedVersion.osCode, t, cpu, memory, port);
+    if (timeout || cpu || memory) {
+      let res;
+      try {
+        res = await this.p2.promise;
+      } catch (err) {
+        return console.error(err);
+      }
+      window.open(res.shareUrl);
+      this.setState({ timeout: 0, cpu: 1, memory: 0.5, port: 80 });
+    }
+  };
+
+  handleTextFieldChange = (e, fieldName) => {
+    this.setState({ [fieldName]: e.target.value });
   };
 
   render() {
-    const { open, selectedSystem, expanded } = this.state;
+    const {
+      open,
+      selectedSystem,
+      expanded,
+      osList,
+      selectedOS,
+      selectedVersion,
+      timeout,
+      cpu,
+      memory,
+      port
+    } = this.state;
     return (
       <div className="app">
         <h1 className="app__title">super inspire</h1>
@@ -404,48 +154,90 @@ class App extends Component {
             variant="outlined"
             onClick={this.handleStartClick}
           >
-            start!
+            ↓ 开始 ↓
           </Button>
         </div>
 
-        <div className="app__choose-system-modal">
-          <Modal open={open} onClose={this.handleClose}>
-            <div className="app__system-wrap">
-              <h2 className="app__system-wrap-title">
-                Select operating system
-              </h2>
-              <div className="app__system-wrap-body">
-                {systemList.map(system => {
-                  return (
-                    <ExpansionPanel
-                      key={system.value}
-                      expanded={expanded === system.label}
-                      onChange={() =>
-                        this.setState({
-                          expanded:
-                            expanded && expanded === system.label
-                              ? ''
-                              : system.label
-                        })
-                      }
-                    >
-                      <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                        <Typography>{system.label}</Typography>
-                      </ExpansionPanelSummary>
-                      <ExpansionPanelDetails>
-                        <ul>
-                          {system.subList.map(subItem => (
-                            <li key={subItem.label}>{subItem.label}</li>
-                          ))}
-                        </ul>
-                      </ExpansionPanelDetails>
-                    </ExpansionPanel>
-                  );
-                })}
-              </div>
-            </div>
-          </Modal>
+        <div className="app__os-list">
+          <OSList
+            osList={osList}
+            onSelectOS={this.handleOSSelect}
+            onSelectVersion={this.handleOSVersionSelect}
+          />
         </div>
+
+        <Dialog
+          open={open}
+          onClose={this.handleClose}
+          aria-labelledby="form-dialog-title"
+        >
+          <DialogTitle id="form-dialog-title">
+            {selectedOS.label} {selectedVersion.label}
+          </DialogTitle>
+          <DialogContent>
+            <TextField
+              className="app__text-field"
+              fullWidth
+              value={port}
+              disabled
+              label="端口号"
+              type="number"
+            />
+            <TextField
+              className="app__text-field"
+              label="使用时间"
+              type="number"
+              fullWidth
+              value={timeout}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="end">分</InputAdornment>
+                )
+              }}
+              required
+              onChange={e => this.handleTextFieldChange(e, 'timeout')}
+            />
+            <TextField
+              className="app__text-field"
+              label="CPU 核数"
+              type="number"
+              fullWidth
+              value={cpu}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="end">核</InputAdornment>
+                )
+              }}
+              required
+              onChange={e => this.handleTextFieldChange(e, 'cpu')}
+            />
+            <TextField
+              className="app__text-field"
+              label="空间大小"
+              type="number"
+              fullWidth
+              value={memory}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="end">GB</InputAdornment>
+                )
+              }}
+              required
+              onChange={e => this.handleTextFieldChange(e, 'memory')}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={() => this.setState({ open: false })}
+              color="primary"
+            >
+              取消
+            </Button>
+            <Button onClick={this.handleDialogConfirm} color="primary">
+              确定
+            </Button>
+          </DialogActions>
+        </Dialog>
       </div>
     );
   }

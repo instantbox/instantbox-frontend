@@ -1,0 +1,102 @@
+.app {
+  &__title {
+    text-align: center;
+    margin: 50px 0;
+    font-size: 60px;
+  }
+  &__desc,
+  &__start {
+    margin: 50px 0;
+    text-align: center;
+  }
+  &__start {
+    margin: 80px 0;
+  }
+  &__os-list {
+    width: 700px;
+    margin: 50px auto;
+    border: 1px solid #c0c0c0;
+    border-radius: 2px;
+    background: #fff;
+  }
+  &__text-field {
+    margin-top: 8px !important;
+    input {
+      text-indent: 16px;
+    }
+  }
+  &__system-wrap {
+    width: 700px;
+    height: 500px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background: #fafafa;
+    border-radius: 2px;
+    overflow: auto;
+  }
+  &__system-wrap-title {
+    margin: 0;
+    padding: 10px 20px;
+    border-bottom: 1px solid #eee;
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+  }
+  &__system-wrap-body {
+    margin-top: 54px;
+    overflow: auto;
+    height: 450px;
+  }
+
+  &__system-list {
+    width: 700px;
+    height: 500px;
+  }
+
+  &__text-editor-wrap {
+    display: block;
+    margin: auto;
+    max-width: 740px;
+    border-radius: 10px;
+    box-shadow: rgba(0, 0, 0, 0.8) 0px 20px 70px;
+    clear: both;
+    overflow: hidden;
+    -webkit-transition: all 0.5s ease-out;
+    -moz-transition: all 0.5s ease-out;
+    -ms-transition: all 0.5s ease-out;
+    -o-transition: all 0.5s ease-out;
+    transition: all 0.5s ease-out;
+  }
+  &__text-body {
+    height: 120px;
+    background-color: rgba(0, 0, 0, 0.85);
+    padding: 10px;
+    color: #f0f0f0;
+    text-shadow: #000 0px 1px 0px;
+    font-family: 'Consolas', 'Courier New', 'Courier';
+    font-weight: bold;
+    text-align: left;
+    overflow: hidden;
+    -webkit-transition: all 0.5s ease-out;
+    -moz-transition: all 0.5s ease-out;
+    -ms-transition: all 0.5s ease-out;
+    -o-transition: all 0.5s ease-out;
+    transition: all 0.5s ease-out;
+  }
+  &__title-bar {
+    padding: 5px 0;
+    font-family: 'Lucida Grande', sans-serif;
+    font-size: 0.75em;
+    text-align: center;
+    text-shadow: rgba(255, 255, 255, 0.8) 0px 1px 0px;
+    background-color: #f8f8f8;
+    background-image: -webkit-linear-gradient(top, #e8e8e8, #bcbbbc);
+    background-image: -moz-linear-gradient(top, #e8e8e8, #bcbbbc);
+    background-image: linear-gradient(top, #e8e8e8, #bcbbbc);
+    box-shadow: inset rgba(255, 255, 255, 0.7) 0px 1px 1px;
+    border-bottom: #6a6a6a 1px solid;
+  }
+}

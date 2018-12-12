@@ -25,11 +25,11 @@ axios.interceptors.response.use(
     const data = res.data;
     return data;
     // 加上 message
-    // if (data.code === 1) {
-    //   return data;
-    // } else {
-    //   throw Error(data.message);
-    // }
+    if (data.statusCode === 1) {
+      return data;
+    } else {
+      throw Error(data.message);
+    }
   },
   function(err) {
     return Promise.reject(err);
@@ -60,7 +60,8 @@ export const makeCancelable = promise => {
 // 请求列表
 const requestUrlList = {
   getOSList: '/v1/superspire/getOSList',
-  getOS: '/v1/superspire/getOS'
+  getOS: '/v1/superspire/getOS',
+  rmOS: '/v1/superspire/rmOS'
 };
 
 /**
@@ -73,15 +74,33 @@ export const getOSList = () => {
 /**
  * 获取容器跳转的地址
  */
-export const getOSUrl = (osCode, timeout, cpu = 1, mem = 0.5, port = 80) => {
+export const getOSUrl = (osCode, timeout, cpu = 1, mem = 0.5) => {
   return makeCancelable(
     axios.get(requestUrlList.getOS, {
       params: {
         os: osCode,
         timeout,
         cpu,
-        mem,
-        port
+        mem
+      }
+    })
+  );
+};
+
+/**
+ * 移除容器
+ */
+export const removeContainerById = (
+  containerId,
+  shareUrl,
+  timestamp = Math.floor(new Date().getTime() / 1000)
+) => {
+  return makeCancelable(
+    axios.get(requestUrlList.rmOS, {
+      params: {
+        containerId,
+        shareUrl,
+        timestamp
       }
     })
   );

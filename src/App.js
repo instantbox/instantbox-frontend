@@ -2,51 +2,36 @@ import React, { Component } from 'react';
 import './App.scss';
 import Button from '@material-ui/core/Button';
 import Typed from 'typed.js';
-import Modal from '@material-ui/core/Modal';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
 
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import Typography from '@material-ui/core/Typography';
-
-import Drawer from '@material-ui/core/Drawer';
-import Divider from '@material-ui/core/Divider';
-
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
 import OSList from './components/OSList';
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { getOSList, getOSUrl } from './util/api';
-import Input from '@material-ui/core/Input';
 import InputAdornment from '@material-ui/core/InputAdornment';
 
 import TextField from '@material-ui/core/TextField';
+import Slider from '@material-ui/lab/Slider';
+import InputLabel from '@material-ui/core/InputLabel';
 
 class App extends Component {
   state = {
     open: false,
-    expanded: '',
-    selectedSystem: 'Arch Linux',
     osList: [],
     selectedVersion: {},
     selectedOS: {},
-    timeout: 0,
+    timeout: 24,
     cpu: 1,
-    memory: 0.5,
-    port: 80
+    memory: 512,
+    port: 80,
+    containers: []
   };
 
   componentDidMount = () => {
     this.getOSList();
+    this.subscribeEvent();
 
     this.typed = new Typed('.app__desc-content', {
       strings: [
@@ -54,6 +39,38 @@ class App extends Component {
       ],
       typeSpeed: 50
     });
+  };
+
+  componentWillUnmount = () => {};
+
+  subscribeEvent = () => {
+    window.onbeforeunload = function() {
+      const container = this.state.containers[0];
+      var xhr = new XMLHttpRequest();
+      xhr.open(
+        'GET',
+        `http://115.238.228.39:65500/v1/superspire/rmOS?containerId=${
+          container.containerId
+        }&shareUrl=${container.shareUrl}&timestamp=${Math.floor(
+          new Date().getTime() / 1000
+        )}`,
+        false
+      );
+      xhr.onload = function(e) {
+        if (xhr.readyState === 4) {
+          if (xhr.status === 200) {
+            console.log(xhr.responseText);
+          } else {
+            console.error(xhr.statusText);
+          }
+        }
+      };
+      xhr.onerror = function(e) {
+        console.error(xhr.statusText);
+      };
+      xhr.send(null);
+      return '1111';
+    };
   };
 
   getOSList = async () => {
@@ -101,7 +118,7 @@ class App extends Component {
 
   handleDialogConfirm = async () => {
     const { timeout, cpu, memory, selectedVersion, port } = this.state;
-    const t = Math.floor(new Date().getTime() / 1000) + timeout * 60;
+    const t = Math.floor(new Date().getTime() / 1000) + timeout * 60 * 60;
     this.p2 = getOSUrl(selectedVersion.osCode, t, cpu, memory, port);
     if (timeout || cpu || memory) {
       let res;
@@ -110,8 +127,11 @@ class App extends Component {
       } catch (err) {
         return console.error(err);
       }
+      this.setState({
+        open: false,
+        containers: [...this.state.containers, res]
+      });
       window.open(res.shareUrl);
-      this.setState({ timeout: 0, cpu: 1, memory: 0.5, port: 80 });
     }
   };
 
@@ -122,19 +142,21 @@ class App extends Component {
   render() {
     const {
       open,
-      selectedSystem,
-      expanded,
       osList,
       selectedOS,
       selectedVersion,
       timeout,
       cpu,
-      memory,
-      port
+      memory
     } = this.state;
     return (
       <div className="app">
-        <h1 className="app__title">super inspire</h1>
+        <h1 className="app__title">
+          <span className="app__title-span">
+            Super Inspire
+            {/* <span className="app__title-icon" /> */}
+          </span>
+        </h1>
         <div className="app__desc">
           <div className="app__text-editor-wrap">
             <div className="app__title-bar">
@@ -175,28 +197,42 @@ class App extends Component {
             {selectedOS.label} {selectedVersion.label}
           </DialogTitle>
           <DialogContent>
-            <TextField
+            {/* <TextField
               className="app__text-field"
               fullWidth
               value={port}
               disabled
               label="端口号"
               type="number"
-            />
-            <TextField
-              className="app__text-field"
-              label="使用时间"
-              type="number"
-              fullWidth
-              value={timeout}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="end">分</InputAdornment>
-                )
-              }}
-              required
-              onChange={e => this.handleTextFieldChange(e, 'timeout')}
-            />
+            /> */}
+            <div>
+              <InputLabel style={{ fontSize: 12 }}>使用时间</InputLabel>
+              <div>
+                <div style={{ padding: '8px 0' }}>
+                  <Slider
+                    value={timeout}
+                    aria-labelledby="label"
+                    onChange={(e, value) => {
+                      this.setState({ timeout: value });
+                    }}
+                    max={24}
+                    min={1}
+                    step={1}
+                  />
+                </div>
+
+                <div
+                  style={{
+                    borderBottom: '1px dotted #949494',
+                    paddingBottom: 8
+                  }}
+                >
+                  <span style={{ color: '#9f9f9f', fontSize: 12 }}>小时</span>
+                  <span style={{ marginLeft: 16 }}>{timeout}</span>
+                </div>
+              </div>
+            </div>
+
             <TextField
               className="app__text-field"
               label="CPU 核数"
@@ -208,8 +244,8 @@ class App extends Component {
                   <InputAdornment position="end">核</InputAdornment>
                 )
               }}
-              required
-              onChange={e => this.handleTextFieldChange(e, 'cpu')}
+              disabled
+              // onChange={e => this.handleTextFieldChange(e, 'cpu')}
             />
             <TextField
               className="app__text-field"
@@ -219,11 +255,11 @@ class App extends Component {
               value={memory}
               InputProps={{
                 startAdornment: (
-                  <InputAdornment position="end">GB</InputAdornment>
+                  <InputAdornment position="end">MB</InputAdornment>
                 )
               }}
-              required
-              onChange={e => this.handleTextFieldChange(e, 'memory')}
+              disabled
+              // onChange={e => this.handleTextFieldChange(e, 'memory')}
             />
           </DialogContent>
           <DialogActions>

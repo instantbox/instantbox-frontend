@@ -1,12 +1,27 @@
 .app {
   &__title {
     text-align: center;
-    margin: 50px 0;
+    margin: 30px 0;
     font-size: 60px;
+    font-weight: 300;
+  }
+  &__title-span {
+    position: relative;
+  }
+  &__title-icon {
+    width: 28px;
+    height: 28px;
+    position: absolute;
+    background-image: url('./assets/terminal.png');
+    background-repeat: no-repeat;
+    background-size: 28px 28px;
+    right: 156px;
+    top: -10px;
+    // animation: rotateInfinite 2s linear infinite;
   }
   &__desc,
   &__start {
-    margin: 50px 0;
+    margin: 25px 0;
     text-align: center;
   }
   &__start {
@@ -14,7 +29,7 @@
   }
   &__os-list {
     width: 700px;
-    margin: 50px auto;
+    margin: 20px auto;
     border: 1px solid #c0c0c0;
     border-radius: 2px;
     background: #fff;
@@ -100,3 +115,12 @@
     border-bottom: #6a6a6a 1px solid;
   }
 }
+
+// @keyframes rotateInfinite {
+//   from {
+//     transform: rotate(0);
+//   }
+//   to {
+//     transform: rotate(360deg);
+//   }
+// }

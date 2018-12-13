@@ -218,20 +218,21 @@ class App extends Component {
               </div>
             </div>
           </div>
-          <div className="app__start">
-            <Button
-              size="large"
-              color="default"
-              variant="outlined"
-              onClick={this.handleStartClick}
-            >
-              ↓ 开始 ↓
-            </Button>
-          </div>
+          {!isExistContainer && (
+            <div className="app__start">
+              <Button
+                size="large"
+                color="default"
+                onClick={this.handleStartClick}
+              >
+                请从下面列表中选择系统
+              </Button>
+            </div>
+          )}
 
           <div className="app__os-list">
             {isExistContainer ? (
-              <div>
+              <div style={{ marginTop: 100 }}>
                 <Tooltip title="若打开的页面报错，请重新点击" aria-label="Add">
                   <Button
                     size="large"
@@ -245,7 +246,7 @@ class App extends Component {
                     }}
                     style={{ margin: 10 }}
                   >
-                    打开已创建的
+                    打开已创建的系统
                   </Button>
                 </Tooltip>
 
@@ -305,7 +306,35 @@ class App extends Component {
                 </div>
               </div>
 
-              <TextField
+              <div>
+                <InputLabel style={{ fontSize: 12 }}>CPU 核数</InputLabel>
+                <div>
+                  <div style={{ padding: '8px 0' }}>
+                    <Slider
+                      value={cpu}
+                      aria-labelledby="label"
+                      onChange={(e, value) => {
+                        this.setState({ cpu: value });
+                      }}
+                      max={2}
+                      min={1}
+                      step={1}
+                    />
+                  </div>
+
+                  <div
+                    style={{
+                      borderBottom: '1px dotted #949494',
+                      paddingBottom: 8
+                    }}
+                  >
+                    <span style={{ color: '#9f9f9f', fontSize: 12 }}>核数</span>
+                    <span style={{ marginLeft: 16 }}>{cpu}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* <TextField
                 className="app__text-field"
                 label="CPU 核数"
                 type="number"
@@ -318,21 +347,34 @@ class App extends Component {
                 }}
                 disabled
                 // onChange={e => this.handleTextFieldChange(e, 'cpu')}
-              />
-              <TextField
-                className="app__text-field"
-                label="空间大小"
-                type="number"
-                fullWidth
-                value={memory}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="end">MB</InputAdornment>
-                  )
-                }}
-                disabled
-                // onChange={e => this.handleTextFieldChange(e, 'memory')}
-              />
+              /> */}
+
+              <div style={{ width: 350 }}>
+                <InputLabel style={{ fontSize: 12 }}>空间大小</InputLabel>
+                <div>
+                  <div style={{ padding: '8px 0' }}>
+                    <Slider
+                      value={memory}
+                      aria-labelledby="label"
+                      onChange={(e, value) => {
+                        this.setState({ memory: value });
+                      }}
+                      max={4096}
+                      min={1}
+                      step={1}
+                    />
+                  </div>
+
+                  <div
+                    style={{
+                      paddingBottom: 8
+                    }}
+                  >
+                    <span style={{ color: '#9f9f9f', fontSize: 12 }}>MB</span>
+                    <span style={{ marginLeft: 16 }}>{memory}</span>
+                  </div>
+                </div>
+              </div>
             </DialogContent>
             <DialogActions>
               <Button

@@ -9,25 +9,36 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import { getOSList, getOSUrl } from './util/api';
+import { getOSList, getOSUrl, removeContainerById } from './util/api';
 import InputAdornment from '@material-ui/core/InputAdornment';
 
 import TextField from '@material-ui/core/TextField';
 import Slider from '@material-ui/lab/Slider';
 import InputLabel from '@material-ui/core/InputLabel';
+import Tooltip from '@material-ui/core/Tooltip';
+import LoadingScreen from 'react-loading-screen';
+
+import { getItem, setItem, rmItem } from './util/util';
 
 class App extends Component {
-  state = {
-    open: false,
-    osList: [],
-    selectedVersion: {},
-    selectedOS: {},
-    timeout: 24,
-    cpu: 1,
-    memory: 512,
-    port: 80,
-    containers: []
-  };
+  constructor(props) {
+    super(props);
+    const { isExistContainer, container } = this.isExistContainer();
+
+    this.state = {
+      open: false,
+      osList: [],
+      selectedVersion: {},
+      selectedOS: {},
+      timeout: 24,
+      cpu: 1,
+      memory: 512,
+      port: 80,
+      container,
+      isExistContainer,
+      screenLoading: false
+    };
+  }
 
   componentDidMount = () => {
     this.getOSList();
@@ -43,35 +54,20 @@ class App extends Component {
 
   componentWillUnmount = () => {};
 
-  subscribeEvent = () => {
-    window.onbeforeunload = function() {
-      const container = this.state.containers[0];
-      var xhr = new XMLHttpRequest();
-      xhr.open(
-        'GET',
-        `http://115.238.228.39:65500/v1/superspire/rmOS?containerId=${
-          container.containerId
-        }&shareUrl=${container.shareUrl}&timestamp=${Math.floor(
-          new Date().getTime() / 1000
-        )}`,
-        false
-      );
-      xhr.onload = function(e) {
-        if (xhr.readyState === 4) {
-          if (xhr.status === 200) {
-            console.log(xhr.responseText);
-          } else {
-            console.error(xhr.statusText);
-          }
-        }
-      };
-      xhr.onerror = function(e) {
-        console.error(xhr.statusText);
-      };
-      xhr.send(null);
-      return '1111';
-    };
+  isExistContainer = () => {
+    let containerInfo = getItem('containerInfo');
+    if (!containerInfo) {
+      return { isExistContainer: false, container: {} };
+    }
+    containerInfo = JSON.parse(containerInfo);
+    const curTime = Math.floor(new Date().getTime() / 1000);
+    // 未过期
+    if (curTime < containerInfo.timeout) {
+      return { isExistContainer: true, container: containerInfo };
+    }
   };
+
+  subscribeEvent = () => {};
 
   getOSList = async () => {
     this.p1 = getOSList();
@@ -117,6 +113,7 @@ class App extends Component {
   };
 
   handleDialogConfirm = async () => {
+    this.setState({ screenLoading: true, screenText: '创建中...' });
     const { timeout, cpu, memory, selectedVersion, port } = this.state;
     const t = Math.floor(new Date().getTime() / 1000) + timeout * 60 * 60;
     this.p2 = getOSUrl(selectedVersion.osCode, t, cpu, memory, port);
@@ -127,16 +124,58 @@ class App extends Component {
       } catch (err) {
         return console.error(err);
       }
-      this.setState({
-        open: false,
-        containers: [...this.state.containers, res]
-      });
-      window.open(res.shareUrl);
+      if (res.shareUrl && res.containerId && res.statusCode) {
+        this.setState({
+          open: false,
+          container: res,
+          isExistContainer: true,
+          screenLoading: false
+        });
+        setItem(
+          'containerInfo',
+          JSON.stringify({
+            shareUrl: res.shareUrl,
+            timeout: t,
+            containerId: res.containerId
+          })
+        );
+        window.open(res.shareUrl);
+      } else {
+        this.setState({ open: false, screenLoading: false });
+        alert('创建失败！');
+      }
     }
   };
 
   handleTextFieldChange = (e, fieldName) => {
     this.setState({ [fieldName]: e.target.value });
+  };
+
+  handleSelectAgain = async () => {
+    this.setState({ screenLoading: true, screenText: '删除中...' });
+    const { container } = this.state;
+    const timestamp = Math.floor(new Date().getTime() / 1000);
+    this.p3 = removeContainerById(
+      container.containerId,
+      container.shareUrl,
+      timestamp
+    );
+    let res;
+    try {
+      res = await this.p3.promise;
+    } catch (err) {
+      return console.error(err);
+    }
+    if (res.statusCode !== 1) {
+      this.setState({ screenLoading: false });
+      return console.error(res.message);
+    }
+    this.setState({
+      isExistContainer: false,
+      container: {},
+      screenLoading: false
+    });
+    rmItem('containerInfo');
   };
 
   render() {
@@ -147,134 +186,168 @@ class App extends Component {
       selectedVersion,
       timeout,
       cpu,
-      memory
+      memory,
+      isExistContainer,
+      screenLoading,
+      screenText
     } = this.state;
     return (
-      <div className="app">
-        <h1 className="app__title">
-          <span className="app__title-span">
-            Super Inspire
-            {/* <span className="app__title-icon" /> */}
-          </span>
-        </h1>
-        <div className="app__desc">
-          <div className="app__text-editor-wrap">
-            <div className="app__title-bar">
-              Arch
-              Linux/Debian/CentOS/Defora/Ubuntu/Ubuntu衍生版/Deepin/LineageOS/openSUSE
-            </div>
-            <div className="app__text-body">
-              <span style={{ marginRight: 10 }}>$</span>
-              <span className="app__desc-content" />
-            </div>
-          </div>
-        </div>
-        <div className="app__start">
-          <Button
-            size="large"
-            color="default"
-            variant="outlined"
-            onClick={this.handleStartClick}
-          >
-            ↓ 开始 ↓
-          </Button>
-        </div>
-
-        <div className="app__os-list">
-          <OSList
-            osList={osList}
-            onSelectOS={this.handleOSSelect}
-            onSelectVersion={this.handleOSVersionSelect}
-          />
-        </div>
-
-        <Dialog
-          open={open}
-          onClose={this.handleClose}
-          aria-labelledby="form-dialog-title"
-        >
-          <DialogTitle id="form-dialog-title">
-            {selectedOS.label} {selectedVersion.label}
-          </DialogTitle>
-          <DialogContent>
-            {/* <TextField
-              className="app__text-field"
-              fullWidth
-              value={port}
-              disabled
-              label="端口号"
-              type="number"
-            /> */}
-            <div>
-              <InputLabel style={{ fontSize: 12 }}>使用时间</InputLabel>
-              <div>
-                <div style={{ padding: '8px 0' }}>
-                  <Slider
-                    value={timeout}
-                    aria-labelledby="label"
-                    onChange={(e, value) => {
-                      this.setState({ timeout: value });
-                    }}
-                    max={24}
-                    min={1}
-                    step={1}
-                  />
-                </div>
-
-                <div
-                  style={{
-                    borderBottom: '1px dotted #949494',
-                    paddingBottom: 8
-                  }}
-                >
-                  <span style={{ color: '#9f9f9f', fontSize: 12 }}>小时</span>
-                  <span style={{ marginLeft: 16 }}>{timeout}</span>
-                </div>
+      <LoadingScreen
+        loading={screenLoading}
+        bgColor="#d0d0d0"
+        spinnerColor="#252525"
+        textColor="#676767"
+        text={screenText}
+      >
+        <div className="app">
+          <h1 className="app__title">
+            <span className="app__title-span">
+              Super Inspire
+              {/* <span className="app__title-icon" /> */}
+            </span>
+          </h1>
+          <div className="app__desc">
+            <div className="app__text-editor-wrap">
+              <div className="app__title-bar">
+                Arch
+                Linux/Debian/CentOS/Defora/Ubuntu/Ubuntu衍生版/Deepin/LineageOS/openSUSE
+              </div>
+              <div className="app__text-body">
+                <span style={{ marginRight: 10 }}>$</span>
+                <span className="app__desc-content" />
               </div>
             </div>
-
-            <TextField
-              className="app__text-field"
-              label="CPU 核数"
-              type="number"
-              fullWidth
-              value={cpu}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="end">核</InputAdornment>
-                )
-              }}
-              disabled
-              // onChange={e => this.handleTextFieldChange(e, 'cpu')}
-            />
-            <TextField
-              className="app__text-field"
-              label="空间大小"
-              type="number"
-              fullWidth
-              value={memory}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="end">MB</InputAdornment>
-                )
-              }}
-              disabled
-              // onChange={e => this.handleTextFieldChange(e, 'memory')}
-            />
-          </DialogContent>
-          <DialogActions>
+          </div>
+          <div className="app__start">
             <Button
-              onClick={() => this.setState({ open: false })}
-              color="primary"
+              size="large"
+              color="default"
+              variant="outlined"
+              onClick={this.handleStartClick}
             >
-              取消
+              ↓ 开始 ↓
             </Button>
-            <Button onClick={this.handleDialogConfirm} color="primary">
-              确定
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </div>
+          </div>
+
+          <div className="app__os-list">
+            {isExistContainer ? (
+              <div>
+                <Tooltip title="若打开的页面报错，请重新点击" aria-label="Add">
+                  <Button
+                    size="large"
+                    color="primary"
+                    variant="outlined"
+                    onClick={() => {
+                      const containerInfo = JSON.parse(
+                        getItem('containerInfo')
+                      );
+                      window.open(containerInfo.shareUrl);
+                    }}
+                    style={{ margin: 10 }}
+                  >
+                    打开已创建的
+                  </Button>
+                </Tooltip>
+
+                <Button
+                  size="large"
+                  color="secondary"
+                  variant="outlined"
+                  onClick={this.handleSelectAgain}
+                  style={{ margin: 10 }}
+                >
+                  重新选择
+                </Button>
+              </div>
+            ) : (
+              <OSList
+                osList={osList}
+                onSelectOS={this.handleOSSelect}
+                onSelectVersion={this.handleOSVersionSelect}
+              />
+            )}
+          </div>
+
+          <Dialog
+            open={open}
+            onClose={this.handleClose}
+            aria-labelledby="form-dialog-title"
+          >
+            <DialogTitle id="form-dialog-title">
+              {selectedOS.label} {selectedVersion.label}
+            </DialogTitle>
+            <DialogContent>
+              <div>
+                <InputLabel style={{ fontSize: 12 }}>使用时间</InputLabel>
+                <div>
+                  <div style={{ padding: '8px 0' }}>
+                    <Slider
+                      value={timeout}
+                      aria-labelledby="label"
+                      onChange={(e, value) => {
+                        this.setState({ timeout: value });
+                      }}
+                      max={24}
+                      min={1}
+                      step={1}
+                    />
+                  </div>
+
+                  <div
+                    style={{
+                      borderBottom: '1px dotted #949494',
+                      paddingBottom: 8
+                    }}
+                  >
+                    <span style={{ color: '#9f9f9f', fontSize: 12 }}>小时</span>
+                    <span style={{ marginLeft: 16 }}>{timeout}</span>
+                  </div>
+                </div>
+              </div>
+
+              <TextField
+                className="app__text-field"
+                label="CPU 核数"
+                type="number"
+                fullWidth
+                value={cpu}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="end">核</InputAdornment>
+                  )
+                }}
+                disabled
+                // onChange={e => this.handleTextFieldChange(e, 'cpu')}
+              />
+              <TextField
+                className="app__text-field"
+                label="空间大小"
+                type="number"
+                fullWidth
+                value={memory}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="end">MB</InputAdornment>
+                  )
+                }}
+                disabled
+                // onChange={e => this.handleTextFieldChange(e, 'memory')}
+              />
+            </DialogContent>
+            <DialogActions>
+              <Button
+                onClick={() => this.setState({ open: false })}
+                color="primary"
+              >
+                取消
+              </Button>
+              <Button onClick={this.handleDialogConfirm} color="primary">
+                确定
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </div>
+      </LoadingScreen>
     );
   }
 }

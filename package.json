@@ -11,6 +11,7 @@
     "node-sass": "^4.11.0",
     "react": "^16.6.3",
     "react-dom": "^16.6.3",
+    "react-loading-screen": "0.0.17",
     "react-scripts": "2.1.1",
     "typed.js": "^2.0.9"
   },

@@ -1,5 +1,8 @@
 .os-list {
   display: flex;
+  border: 1px solid #c0c0c0;
+  border-radius: 2px;
+  background: #fff;
   &__os {
     width: 200px;
     border-right: 1px solid #c0c0c0;
@@ -8,6 +11,7 @@
   &__version {
     flex: 1;
     padding: 16px;
+    text-align: left;
   }
   &__os-btn {
     transition: 0.3s;

@@ -30,7 +30,6 @@ export class OSList extends PureComponent {
     }
 
     const selectedOS = osList.find(os => os.selected);
-    console.log('selectedOS:', selectedOS);
 
     return (
       <div className="os-list">

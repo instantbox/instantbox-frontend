@@ -1,0 +1,38 @@
+.select-system-config {
+  border: 1px solid #c0c0c0;
+  border-radius: 2px;
+  background: #fff;
+  min-height: 420px;
+  width: 800px;
+  margin: 100px auto;
+  border-radius: 2px;
+  padding: 20px;
+  position: relative;
+  padding-bottom: 60px;
+  &__step-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: space-around;
+  }
+  &__steps-action {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    margin-top: 20px;
+    button {
+      margin: 0 4px;
+      float: right;
+    }
+  }
+  img {
+    filter: grayscale(100%);
+  }
+  .isSelect {
+    filter: none;
+  }
+}
+
+.ant-card-body {
+  padding: 8px !important;
+}

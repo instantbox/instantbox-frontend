@@ -3,9 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@material-ui/core": "^3.6.1",
-    "@material-ui/icons": "^3.0.1",
-    "@material-ui/lab": "^3.0.0-alpha.25",
+    "antd": "^3.12.1",
     "axios": "^0.18.0",
     "classnames": "^2.2.6",
     "node-sass": "^4.11.0",

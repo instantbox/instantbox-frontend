@@ -1,12 +1,12 @@
-import axios from 'axios';
+import axios from "axios";
 
 // 开发环境
-if (process.env.NODE_ENV === 'development') {
-  axios.defaults.baseURL = 'http://115.238.228.39:65500/';
+if (process.env.NODE_ENV === "development") {
+  axios.defaults.baseURL = "http://60.190.81.133:9010/";
 
   // 生产环境
-} else if (process.env.NODE_ENV === 'production') {
-  axios.defaults.baseURL = 'http://115.238.228.39:65500/';
+} else if (process.env.NODE_ENV === "production") {
+  axios.defaults.baseURL = "http://60.190.81.133:9010/";
 }
 
 // 请求拦截
@@ -56,12 +56,12 @@ export const makeCancelable = promise => {
     }
   };
 };
-
+const apiVersion = "/v2/superinspire";
 // 请求列表
 const requestUrlList = {
-  getOSList: '/v1/superspire/getOSList',
-  getOS: '/v1/superspire/getOS',
-  rmOS: '/v1/superspire/rmOS'
+  getOSList: `${apiVersion}/getOSList`,
+  getOS: `${apiVersion}/getOS`,
+  rmOS: `${apiVersion}/rmOS`
 };
 
 /**
@@ -74,14 +74,15 @@ export const getOSList = () => {
 /**
  * 获取容器跳转的地址
  */
-export const getOSUrl = (osCode, timeout, cpu = 1, mem = 0.5) => {
+export const getOSUrl = (osCode, timeout, cpu = 1, mem = 0.5, port = 80) => {
   return makeCancelable(
     axios.get(requestUrlList.getOS, {
       params: {
         os: osCode,
         timeout,
         cpu,
-        mem
+        mem,
+        port
       }
     })
   );

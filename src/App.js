@@ -1,24 +1,12 @@
-import React, { Component } from 'react';
-import './App.scss';
-import Button from '@material-ui/core/Button';
-import Typed from 'typed.js';
+import React, { Component } from "react";
+import "./App.scss";
+import Typed from "typed.js";
+import { getOSList, getOSUrl, removeContainerById } from "./util/api";
+import LoadingScreen from "react-loading-screen";
 
-import OSList from './components/OSList';
-
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import { getOSList, getOSUrl, removeContainerById } from './util/api';
-import InputAdornment from '@material-ui/core/InputAdornment';
-
-import TextField from '@material-ui/core/TextField';
-import Slider from '@material-ui/lab/Slider';
-import InputLabel from '@material-ui/core/InputLabel';
-import Tooltip from '@material-ui/core/Tooltip';
-import LoadingScreen from 'react-loading-screen';
-
-import { getItem, setItem, rmItem } from './util/util';
+import { getItem, setItem, rmItem } from "./util/util";
+import { Button, Tooltip, Divider } from "antd";
+import SelectSystemConfig from "./components/SelectSystemConfig";
 
 class App extends Component {
   constructor(props) {
@@ -44,7 +32,7 @@ class App extends Component {
     this.getOSList();
     this.subscribeEvent();
 
-    this.typed = new Typed('.app__desc-content', {
+    this.typed = new Typed(".app__desc-content", {
       strings: [
         `Want to experiment with something on a Linux distribution? Let's start!`
       ],
@@ -55,7 +43,7 @@ class App extends Component {
   componentWillUnmount = () => {};
 
   isExistContainer = () => {
-    let containerInfo = getItem('containerInfo');
+    let containerInfo = getItem("containerInfo");
     if (!containerInfo) {
       return { isExistContainer: false, container: {} };
     }
@@ -112,47 +100,8 @@ class App extends Component {
     });
   };
 
-  handleDialogConfirm = async () => {
-    this.setState({ screenLoading: true, screenText: '创建中...' });
-    const { timeout, cpu, memory, selectedVersion, port } = this.state;
-    const t = Math.floor(new Date().getTime() / 1000) + timeout * 60 * 60;
-    this.p2 = getOSUrl(selectedVersion.osCode, t, cpu, memory, port);
-    if (timeout || cpu || memory) {
-      let res;
-      try {
-        res = await this.p2.promise;
-      } catch (err) {
-        return console.error(err);
-      }
-      if (res.shareUrl && res.containerId && res.statusCode) {
-        this.setState({
-          open: false,
-          container: res,
-          isExistContainer: true,
-          screenLoading: false
-        });
-        setItem(
-          'containerInfo',
-          JSON.stringify({
-            shareUrl: res.shareUrl,
-            timeout: t,
-            containerId: res.containerId
-          })
-        );
-        window.open(res.shareUrl);
-      } else {
-        this.setState({ open: false, screenLoading: false });
-        alert('创建失败！');
-      }
-    }
-  };
-
-  handleTextFieldChange = (e, fieldName) => {
-    this.setState({ [fieldName]: e.target.value });
-  };
-
   handleSelectAgain = async () => {
-    this.setState({ screenLoading: true, screenText: '删除中...' });
+    this.setState({ screenLoading: true, screenText: "删除中..." });
     const { container } = this.state;
     const timestamp = Math.floor(new Date().getTime() / 1000);
     this.p3 = removeContainerById(
@@ -175,22 +124,15 @@ class App extends Component {
       container: {},
       screenLoading: false
     });
-    rmItem('containerInfo');
+    rmItem("containerInfo");
+  };
+
+  handleOkCallback = (isExistContainer, container) => {
+    this.setState({ isExistContainer, container });
   };
 
   render() {
-    const {
-      open,
-      osList,
-      selectedOS,
-      selectedVersion,
-      timeout,
-      cpu,
-      memory,
-      isExistContainer,
-      screenLoading,
-      screenText
-    } = this.state;
+    const { isExistContainer, screenLoading, screenText } = this.state;
     return (
       <LoadingScreen
         loading={screenLoading}
@@ -218,29 +160,22 @@ class App extends Component {
               </div>
             </div>
           </div>
-          {!isExistContainer && (
-            <div className="app__start">
-              <Button
-                size="large"
-                color="default"
-                onClick={this.handleStartClick}
-              >
-                请从下面列表中选择系统
-              </Button>
-            </div>
-          )}
+
+          <Divider style={{ marginTop: 100 }}>
+            {isExistContainer ? "您已创建系统" : "选择系统配置"}
+          </Divider>
 
           <div className="app__os-list">
             {isExistContainer ? (
-              <div style={{ marginTop: 100 }}>
-                <Tooltip title="若打开的页面报错，请重新点击" aria-label="Add">
+              <div style={{ marginTop: 100, textAlign: "center" }}>
+                <Tooltip title="若打开的页面报错，请重新点击">
                   <Button
                     size="large"
                     color="primary"
                     variant="outlined"
                     onClick={() => {
                       const containerInfo = JSON.parse(
-                        getItem('containerInfo')
+                        getItem("containerInfo")
                       );
                       window.open(containerInfo.shareUrl);
                     }}
@@ -261,133 +196,9 @@ class App extends Component {
                 </Button>
               </div>
             ) : (
-              <OSList
-                osList={osList}
-                onSelectOS={this.handleOSSelect}
-                onSelectVersion={this.handleOSVersionSelect}
-              />
+              <SelectSystemConfig okCallback={this.handleOkCallback} />
             )}
           </div>
-
-          <Dialog
-            open={open}
-            onClose={this.handleClose}
-            aria-labelledby="form-dialog-title"
-          >
-            <DialogTitle id="form-dialog-title">
-              {selectedOS.label} {selectedVersion.label}
-            </DialogTitle>
-            <DialogContent>
-              <div>
-                <InputLabel style={{ fontSize: 12 }}>使用时间</InputLabel>
-                <div>
-                  <div style={{ padding: '8px 0' }}>
-                    <Slider
-                      value={timeout}
-                      aria-labelledby="label"
-                      onChange={(e, value) => {
-                        this.setState({ timeout: value });
-                      }}
-                      max={24}
-                      min={1}
-                      step={1}
-                    />
-                  </div>
-
-                  <div
-                    style={{
-                      borderBottom: '1px dotted #949494',
-                      paddingBottom: 8
-                    }}
-                  >
-                    <span style={{ color: '#9f9f9f', fontSize: 12 }}>小时</span>
-                    <span style={{ marginLeft: 16 }}>{timeout}</span>
-                  </div>
-                </div>
-              </div>
-
-              <div>
-                <InputLabel style={{ fontSize: 12 }}>CPU 核数</InputLabel>
-                <div>
-                  <div style={{ padding: '8px 0' }}>
-                    <Slider
-                      value={cpu}
-                      aria-labelledby="label"
-                      onChange={(e, value) => {
-                        this.setState({ cpu: value });
-                      }}
-                      max={2}
-                      min={1}
-                      step={1}
-                    />
-                  </div>
-
-                  <div
-                    style={{
-                      borderBottom: '1px dotted #949494',
-                      paddingBottom: 8
-                    }}
-                  >
-                    <span style={{ color: '#9f9f9f', fontSize: 12 }}>核数</span>
-                    <span style={{ marginLeft: 16 }}>{cpu}</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* <TextField
-                className="app__text-field"
-                label="CPU 核数"
-                type="number"
-                fullWidth
-                value={cpu}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="end">核</InputAdornment>
-                  )
-                }}
-                disabled
-                // onChange={e => this.handleTextFieldChange(e, 'cpu')}
-              /> */}
-
-              <div style={{ width: 350 }}>
-                <InputLabel style={{ fontSize: 12 }}>空间大小</InputLabel>
-                <div>
-                  <div style={{ padding: '8px 0' }}>
-                    <Slider
-                      value={memory}
-                      aria-labelledby="label"
-                      onChange={(e, value) => {
-                        this.setState({ memory: value });
-                      }}
-                      max={4096}
-                      min={1}
-                      step={1}
-                    />
-                  </div>
-
-                  <div
-                    style={{
-                      paddingBottom: 8
-                    }}
-                  >
-                    <span style={{ color: '#9f9f9f', fontSize: 12 }}>MB</span>
-                    <span style={{ marginLeft: 16 }}>{memory}</span>
-                  </div>
-                </div>
-              </div>
-            </DialogContent>
-            <DialogActions>
-              <Button
-                onClick={() => this.setState({ open: false })}
-                color="primary"
-              >
-                取消
-              </Button>
-              <Button onClick={this.handleDialogConfirm} color="primary">
-                确定
-              </Button>
-            </DialogActions>
-          </Dialog>
         </div>
       </LoadingScreen>
     );

@@ -5,8 +5,9 @@ import { getOSList, getOSUrl, removeContainerById } from "./util/api";
 import LoadingScreen from "react-loading-screen";
 
 import { getItem, setItem, rmItem } from "./util/util";
-import { Button, Tooltip, Divider } from "antd";
+import { Button, Tooltip, Divider, Card, Modal } from "antd";
 import SelectSystemConfig from "./components/SelectSystemConfig";
+import SystemConfiguration from "./components/SystemConfiguration";
 
 class App extends Component {
   constructor(props) {
@@ -24,7 +25,10 @@ class App extends Component {
       port: 80,
       container,
       isExistContainer,
-      screenLoading: false
+      screenLoading: false,
+      externalPort: 0, // 外部端口（后端返回的端口号）
+      port: 0, // 内部端口（填写表单填写的端口号）
+      skipModalVisible: false
     };
   }
 
@@ -127,12 +131,20 @@ class App extends Component {
     rmItem("containerInfo");
   };
 
-  handleOkCallback = (isExistContainer, container) => {
-    this.setState({ isExistContainer, container });
+  handleOkCallback = () => {
+    const { isExistContainer, container } = this.isExistContainer();
+    this.setState({ isExistContainer, container, skipModalVisible: true });
   };
 
   render() {
-    const { isExistContainer, screenLoading, screenText } = this.state;
+    const {
+      isExistContainer,
+      screenLoading,
+      screenText,
+      externalPort,
+      port,
+      container
+    } = this.state;
     return (
       <LoadingScreen
         loading={screenLoading}
@@ -165,9 +177,27 @@ class App extends Component {
             {isExistContainer ? "您已创建系统" : "选择系统配置"}
           </Divider>
 
+          {isExistContainer && (
+            <Card>
+              <div className="app__ports">
+                <SystemConfiguration
+                  showInnerPort
+                  showExternalPort
+                  system={container.system}
+                  version={container.version}
+                  cpu={container.cpu}
+                  mem={container.mem}
+                  timeout={container.timeoutH}
+                  innerPort={container.innerPort}
+                  externalPort={container.externalPort}
+                />
+              </div>
+            </Card>
+          )}
+
           <div className="app__os-list">
             {isExistContainer ? (
-              <div style={{ marginTop: 100, textAlign: "center" }}>
+              <div style={{ marginTop: 20, textAlign: "center" }}>
                 <Tooltip title="若打开的页面报错，请重新点击">
                   <Button
                     size="large"
@@ -200,6 +230,19 @@ class App extends Component {
             )}
           </div>
         </div>
+        <Modal
+          title="提示"
+          visible={this.state.skipModalVisible}
+          onOk={() => {
+            window.open(this.state.container.shareUrl);
+            this.setState({ skipModalVisible: false });
+          }}
+          okText="确定"
+          cancelText="取消"
+          onCancel={() => this.setState({ skipModalVisible: false })}
+        >
+          <p>系统已创建，是否跳转到系统页面？</p>
+        </Modal>
       </LoadingScreen>
     );
   }

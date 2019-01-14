@@ -10,21 +10,16 @@ import {
   Card,
   Select,
   Button,
-  Input,
-  Form,
   Modal
 } from "antd";
 import { getOSList, getOSUrl } from "../../util/api";
 import { getItem, setItem } from "../../util/util";
 import SelectForm from "./SelectForm";
+import SystemConfiguration from "../SystemConfiguration";
+
 const Step = Steps.Step;
-const { Meta } = Card;
 const Option = Select.Option;
-const FormItem = Form.Item;
-const formItemLayout = {
-  labelCol: { span: 10 },
-  wrapperCol: { span: 14 }
-};
+
 /**
  * 选择系统配置
  */
@@ -48,7 +43,8 @@ export class SelectSystemConfig extends React.Component {
       port: "80",
       modalVisible: false,
       isExistContainer,
-      container
+      container,
+      skipModalVisible: false
     };
 
     this.steps = [
@@ -163,17 +159,30 @@ export class SelectSystemConfig extends React.Component {
       } catch (err) {
         return console.error(err);
       }
-      if (res.shareUrl && res.containerId && res.statusCode) {
+      if (res.shareUrl && res.containerId && res.statusCode && res.openPort) {
         this.setState({
           open: false,
           container: res,
-          isExistContainer: true
+          isExistContainer: true,
+          modalVisible: false,
+          skipModalVisible: true
         });
+
+        const { system, version } = this.getSystemVersion();
+
         setItem(
           "containerInfo",
           JSON.stringify({
-            shareUrl: res.shareUrl,
+            system,
+            version: version,
+            port,
+            cpu,
+            mem,
             timeout: t,
+            timeoutH: timeout,
+            innerPort: port,
+            externalPort: res.openPort,
+            shareUrl: res.shareUrl,
             containerId: res.containerId
           })
         );
@@ -182,10 +191,10 @@ export class SelectSystemConfig extends React.Component {
           timeout: t,
           containerId: res.containerId
         });
-        window.open(res.shareUrl);
+        this._shareUrl = res.shareUrl;
       } else {
         this.setState({ okLoading: false });
-        message.error("创建失败");
+        message.error("创建失败，请重试");
       }
     }
   };
@@ -237,10 +246,10 @@ export class SelectSystemConfig extends React.Component {
     this.steps[1].content = <SelectForm getForm={this.handleGetForm} />;
   };
 
-  getSystem = () => {
+  getSystemVersion = () => {
     const { selectsObj, osList } = this.state;
     if (!selectsObj.length || !osList.length) {
-      return;
+      return { system: "", version: "" };
     }
     const selectObj = selectsObj.filter(item => item)[0];
 
@@ -249,17 +258,18 @@ export class SelectSystemConfig extends React.Component {
     const systemVersion = subList.find(
       item => item.osCode === selectObj.osCode
     );
-    return (
-      <Fragment>
-        {systemName}
-        <Divider type="vertical" />
-        {systemVersion.label}
-      </Fragment>
-    );
+    return { system: systemName, version: systemVersion.label };
   };
 
   render() {
-    const { osList, loading, okLoading, currentStep } = this.state;
+    const {
+      osList,
+      loading,
+      okLoading,
+      currentStep,
+      skipModalVisible
+    } = this.state;
+    const { system, version } = this.getSystemVersion();
     this.generateStepsContent();
     return (
       <Spin spinning={loading}>
@@ -310,23 +320,14 @@ export class SelectSystemConfig extends React.Component {
           cancelText="取消"
         >
           <Spin spinning={okLoading}>
-            <Form>
-              <FormItem label="系统" {...formItemLayout}>
-                {this.getSystem()}
-              </FormItem>
-              <FormItem label="端口号" {...formItemLayout}>
-                {this._values.port}
-              </FormItem>
-              <FormItem label="CPU 核数" {...formItemLayout}>
-                {this._values.cpu} 核
-              </FormItem>
-              <FormItem label="空间大小" {...formItemLayout}>
-                {this._values.mem} M（{(this._values.mem / 1024).toFixed(2)} G）
-              </FormItem>
-              <FormItem label="使用时长" {...formItemLayout}>
-                {this._values.timeout} 小时
-              </FormItem>
-            </Form>
+            <SystemConfiguration
+              system={system}
+              version={version}
+              innerPort={this._values.port}
+              cpu={this._values.cpu}
+              mem={this._values.mem}
+              timeout={this._values.timeout}
+            />
           </Spin>
         </Modal>
       </Spin>

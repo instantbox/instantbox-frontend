@@ -109,13 +109,7 @@
     box-shadow: inset rgba(255, 255, 255, 0.7) 0px 1px 1px;
     border-bottom: #6a6a6a 1px solid;
   }
+  &__ports {
+    font-weight: bold;
+  }
 }
-
-// @keyframes rotateInfinite {
-//   from {
-//     transform: rotate(0);
-//   }
-//   to {
-//     transform: rotate(360deg);
-//   }
-// }

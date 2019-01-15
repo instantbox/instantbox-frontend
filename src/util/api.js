@@ -1,12 +1,13 @@
 import axios from "axios";
-
+import { getBaseUrl } from "./util";
 // 开发环境
 if (process.env.NODE_ENV === "development") {
-  axios.defaults.baseURL = "http://60.190.81.133:9010/";
+  axios.defaults.baseURL = "http://34.80.61.20:9010/";
 
   // 生产环境
 } else if (process.env.NODE_ENV === "production") {
-  axios.defaults.baseURL = "http://60.190.81.133:9010/";
+  // axios.defaults.baseURL = "http://60.190.81.133:9010/";
+  axios.defaults.baseURL = getBaseUrl();
 }
 
 // 请求拦截

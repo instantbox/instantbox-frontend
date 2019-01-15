@@ -10,4 +10,8 @@ const rmItem = key => {
   return localStorage.removeItem(key);
 };
 
-export { setItem, getItem, rmItem };
+const getBaseUrl = (port = 9010) => {
+  return `http://${document.location.hostname}:${port}`;
+};
+
+export { setItem, getItem, rmItem, getBaseUrl };

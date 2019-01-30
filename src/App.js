@@ -48,15 +48,17 @@ class App extends Component {
 
   isExistContainer = () => {
     let containerInfo = getItem("containerInfo");
-    if (!containerInfo) {
-      return { isExistContainer: false, container: {} };
+    if (containerInfo) {
+      containerInfo = JSON.parse(containerInfo);
+      const curTime = Math.floor(new Date().getTime() / 1000);
+      // 检查是否过期
+      if (curTime < containerInfo.timeout) {
+        return { isExistContainer: true, container: containerInfo };
+      } else {
+        rmItem("containerInfo");
+      }
     }
-    containerInfo = JSON.parse(containerInfo);
-    const curTime = Math.floor(new Date().getTime() / 1000);
-    // 未过期
-    if (curTime < containerInfo.timeout) {
-      return { isExistContainer: true, container: containerInfo };
-    }
+    return { isExistContainer: false, container: {} }; 
   };
 
   subscribeEvent = () => {};

@@ -1,9 +1,9 @@
-## super-inspire 前端
+## instantbox 前端
 
 ### 下载
 
 ```shell
-git clone https://github.com/super-inspire/super-inspire-frontend.git
+git clone https://github.com/instantbox/instantbox-frontend.git
 ```
 
 ### 开发
@@ -25,6 +25,6 @@ npm run test
 npm run build
 ```
 
-## super-inspire 后端
+## instantbox 后端
 
-[地址](https://github.com/super-inspire/super-inspire-end)
+[地址](https://github.com/instantbox/instantbox-end)

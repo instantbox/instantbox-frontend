@@ -156,7 +156,7 @@ class App extends Component {
         <div className="app">
           <h1 className="app__title">
             <span className="app__title-span">
-              Super Inspire
+              instantbox
               {/* <span className="app__title-icon" /> */}
             </span>
           </h1>
@@ -234,7 +234,7 @@ class App extends Component {
           title="提示"
           visible={this.state.skipModalVisible}
           onOk={() => {
-            window.open(this.state.container.shareUrl);
+            window.open(this.state.container.shareUrl.replace('http://:', `http://${window.location.hostname}:`));
             this.setState({ skipModalVisible: false });
           }}
           okText="确定"

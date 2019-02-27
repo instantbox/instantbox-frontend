@@ -1,0 +1,24 @@
+language: minimal
+sudo: required
+
+services:
+  - docker
+
+env:
+  - IMAGE_NAME=instantbox/instantbox-frontend
+
+script:
+  - docker pull "$IMAGE_NAME" || true
+  - docker build --cache-from "$IMAGE_NAME" 
+      --build-arg BUILD_DATE="$(date -u +'%Y-%m-%dT%H:%M:%SZ')" 
+      --build-arg VCS_REF="$TRAVIS_COMMIT" 
+      -t "$IMAGE_NAME:build" -f ./Dockerfile .
+  - docker run -d -P --name temp $IMAGE_NAME:build
+  - docker rm -f temp || true
+  
+after_success:
+  - if [[ "$TRAVIS_BRANCH" == "master" ]]; then 
+      docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD_SECURE";
+      docker tag "$IMAGE_NAME:build" "$IMAGE_NAME";
+      docker push "$IMAGE_NAME";
+    fi

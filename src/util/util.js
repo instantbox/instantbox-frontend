@@ -10,8 +10,8 @@ const rmItem = key => {
   return localStorage.removeItem(key);
 };
 
-const getBaseUrl = (port = 9010) => {
-  return `http://${document.location.hostname}:${port}`;
+const getBaseUrl = () => {
+  return '/api';
 };
 
 export { setItem, getItem, rmItem, getBaseUrl };

@@ -1,30 +1,30 @@
-## instantbox 前端
+## instantbox frontend
 
-### 下载
+### Download
 
 ```shell
 git clone https://github.com/instantbox/instantbox-frontend.git
 ```
 
-### 开发
+### Develop
 
 ```shell
 npm install
 npm start
 ```
 
-### 测试
+### Test
 
 ```shell
 npm run test
 ```
 
-### 打包
+### Package
 
 ```shell
 npm run build
 ```
 
-## instantbox 后端
+## instantbox backend
 
-[地址](https://github.com/instantbox/instantbox-end)
+[instantbox/instantbox](https://github.com/instantbox/instantbox)

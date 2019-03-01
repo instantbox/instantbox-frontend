@@ -209,7 +209,7 @@ class App extends Component {
                       const containerInfo = JSON.parse(
                         getItem("containerInfo")
                       );
-                      window.open(containerInfo.shareUrl);
+                      window.open(containerInfo.shareUrl.replace('http://:', `http://${window.location.hostname}:`));
                     }}
                     style={{ margin: 10 }}
                   >

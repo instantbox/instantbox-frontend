@@ -84,6 +84,7 @@ class SystemConfiguration extends React.Component {
       </Fragment>
     );
   };
+
   render() {
     const {
       cpu,
@@ -94,6 +95,7 @@ class SystemConfiguration extends React.Component {
       innerPort,
       externalPort
     } = this.props;
+    
     return (
       <Form>
         <FormItem label={customLabel("系统")} {...formItemLayout}>

@@ -1,23 +1,10 @@
-import React, { Fragment } from "react";
-import PropTypes from "prop-types";
+import React from "react";
 import "./SelectSystemConfig.scss";
-import classNames from "classnames";
 import {
-  Spin,
-  Steps,
-  Divider,
-  message,
-  Card,
-  Select,
-  Button,
   Input,
   Form
 } from "antd";
-import { makeCancelable, getOSList } from "../../util/api";
 
-const Step = Steps.Step;
-const { Meta } = Card;
-const Option = Select.Option;
 const FormItem = Form.Item;
 
 const rules = {

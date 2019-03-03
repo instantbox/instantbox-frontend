@@ -12,7 +12,7 @@ import {
   Button,
   Modal
 } from "antd";
-import { getOSList, getOSUrl } from "../../util/api";
+import { getOSUrl } from "../../util/api";
 import { getItem, setItem } from "../../util/util";
 import SelectForm from "./SelectForm";
 import SystemConfiguration from "../SystemConfiguration";
@@ -34,11 +34,9 @@ export class SelectSystemConfig extends React.Component {
     const { isExistContainer, container } = this.isExistContainer();
 
     this.state = {
-      osList: [],
-      loading: false,
       okLoading: false,
       currentStep,
-      osCode: 0,
+      osCode: null,
       selectsObj: [],
       port: "80",
       modalVisible: false,
@@ -61,10 +59,6 @@ export class SelectSystemConfig extends React.Component {
     ];
   }
 
-  componentDidMount = () => {
-    this.getOSList();
-  };
-
   getCurrentStep = () => {
     return 0;
   };
@@ -80,18 +74,6 @@ export class SelectSystemConfig extends React.Component {
     if (curTime < containerInfo.timeout) {
       return { isExistContainer: true, container: containerInfo };
     }
-  };
-
-  getOSList = async () => {
-    this.setState({ loading: true });
-    this.p1 = getOSList();
-    let res;
-    try {
-      res = await this.p1.promise;
-    } catch (err) {
-      return message.error(err.message);
-    }
-    this.setState({ loading: false, osList: res });
   };
 
   handleSelectChange = (value, index) => {
@@ -202,7 +184,7 @@ export class SelectSystemConfig extends React.Component {
   generateStepsContent = () => {
     this.steps[0].content = (
       <Fragment>
-        {this.state.osList.map((item, index) => {
+        {this.props.osList.map((item, index) => {
           const { selectsObj } = this.state;
           let osCode;
           if (selectsObj[index]) {
@@ -247,7 +229,8 @@ export class SelectSystemConfig extends React.Component {
   };
 
   getSystemVersion = () => {
-    const { selectsObj, osList } = this.state;
+    const { selectsObj } = this.state;
+    const { osList } = this.props;
     if (!selectsObj.length || !osList.length) {
       return { system: "", version: "" };
     }
@@ -263,16 +246,15 @@ export class SelectSystemConfig extends React.Component {
 
   render() {
     const {
-      osList,
-      loading,
       okLoading,
       currentStep,
       skipModalVisible
     } = this.state;
+    const { osList } = this.props;
     const { system, version } = this.getSystemVersion();
     this.generateStepsContent();
     return (
-      <Spin spinning={loading}>
+      <Spin spinning={osList.length === 0}>
         <div className="select-system-config">
           <div>
             <Steps current={currentStep}>

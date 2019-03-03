@@ -83,7 +83,7 @@ const rules = {
 };
 
 /**
- * 填写系统性能参数的表单
+ * A form for instantbox requests
  */
 export class SelectForm extends React.Component {
   static propTypes = {};

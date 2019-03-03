@@ -20,7 +20,7 @@ const Step = Steps.Step;
 const Option = Select.Option;
 
 /**
- * 选择系统配置
+ * Select system configuration
  */
 export class SelectSystemConfig extends React.Component {
   static propTypes = {};

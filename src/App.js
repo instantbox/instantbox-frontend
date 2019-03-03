@@ -22,8 +22,8 @@ class App extends Component {
       timeout: 24,
       cpu: 1,
       memory: 512,
-      port: 80, // 内部端口（填写表单填写的端口号）
-      externalPort: 0, // 外部端口（后端返回的端口号）
+      port: 80, // Internal port (entered by user)
+      externalPort: 0, // External port (assigned by api)
       container,
       isExistContainer,
       screenLoading: false,
@@ -52,7 +52,7 @@ class App extends Component {
     if (containerInfo) {
       containerInfo = JSON.parse(containerInfo);
       const curTime = Math.floor(new Date().getTime() / 1000);
-      // 检查是否过期
+      // Check if it's still valid
       if (curTime < containerInfo.timeout) {
         return { isExistContainer: true, container: containerInfo };
       } else {
@@ -78,7 +78,6 @@ class App extends Component {
     }
     this.setState({ osList });
   };
-
 
   handleOSSelect = selectedOS => {
     const osList = [...this.state.osList];

@@ -18,57 +18,58 @@ const customLabel = title => {
 };
 
 /**
- * 显示用户配置表单
+ * Show current system configuration
  */
 class SystemConfiguration extends React.Component {
   static propTypes = {
     /**
-     * 系统名称
+     * OS name
      */
     system: PropTypes.string,
 
     /**
-     * 系统版本号
+     * OS version
      */
     version: PropTypes.string,
 
     /**
-     * cpu 核数
+     * CPU
      */
     cpu: PropTypes.string,
 
     /**
-     * 空间大小
+     * Memory
      */
     mem: PropTypes.string,
 
     /**
-     * 使用时长
+     * Time-to-live
      */
     timeout: PropTypes.any,
 
     /**
-     * 内部端口号
+     * Port exposed inside container
      */
     innerPort: PropTypes.string,
 
     /**
-     * 外部端口号
+     * Port that is publically accessible
      */
     externalPort: PropTypes.any,
 
     /**
-     * 是否显示外部字段
-     * 默认：false
+     * Should show innerPort
+     * Default: false
      */
     showInnerPort: PropTypes.bool,
 
     /**
-     * 是否显示内部字段
-     * 默认：false
+     * Should show external port
+     * Default: false
      */
     showExternalPort: PropTypes.bool
   };
+
   static defaultProps = {
     showInnerPort: false,
     showExternalPort: false

@@ -35,7 +35,7 @@ class App extends Component {
     this.getOSList();
     this.subscribeEvent();
 
-    if (document.getElementsByClassName('.app__desc-content').length > 0) {
+    if (document.getElementsByClassName('app__desc-content').length > 0) {
       this.typed = new Typed(".app__desc-content", {
         strings: [
           `Want to experiment with something on a Linux distribution? Let's start!`

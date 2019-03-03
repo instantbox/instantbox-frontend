@@ -220,7 +220,7 @@ class App extends Component {
                 </Button>
               </div>
             ) : (
-              <SelectSystemConfig okCallback={this.handleOkCallback} />
+              <SelectSystemConfig osList={this.state.osList} okCallback={this.handleOkCallback} />
             )}
           </div>
         </div>

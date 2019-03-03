@@ -1,5 +1,4 @@
 import React, { Fragment } from "react";
-import PropTypes from "prop-types";
 import "./SelectSystemConfig.scss";
 import classNames from "classnames";
 import {
@@ -248,7 +247,6 @@ export class SelectSystemConfig extends React.Component {
     const {
       okLoading,
       currentStep,
-      skipModalVisible
     } = this.state;
     const { osList } = this.props;
     const { system, version } = this.getSystemVersion();

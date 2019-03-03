@@ -1,13 +1,22 @@
-language: minimal
+language: node_js
 sudo: required
 
 services:
   - docker
 
+node_js:
+  - 10
+
 env:
   - IMAGE_NAME=instantbox/instantbox-frontend
 
+cache: npm
+
+install:
+  - npm ci
+
 script:
+  - npm run lint && npm test
   - docker pull "$IMAGE_NAME" || true
   - docker build --cache-from "$IMAGE_NAME" 
       --build-arg BUILD_DATE="$(date -u +'%Y-%m-%dT%H:%M:%SZ')" 

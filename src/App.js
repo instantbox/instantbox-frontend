@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import "./App.scss";
 import Typed from "typed.js";
-import { getOSList, getOSUrl, removeContainerById } from "./util/api";
+import { getOSList, removeContainerById } from "./util/api";
 import LoadingScreen from "react-loading-screen";
 
-import { getItem, setItem, rmItem } from "./util/util";
+import { getItem, rmItem } from "./util/util";
 import { Button, Tooltip, Divider, Card, Modal } from "antd";
 import SelectSystemConfig from "./components/SelectSystemConfig";
 import SystemConfiguration from "./components/SystemConfiguration";
@@ -22,12 +22,11 @@ class App extends Component {
       timeout: 24,
       cpu: 1,
       memory: 512,
-      port: 80,
+      port: 80, // 内部端口（填写表单填写的端口号）
+      externalPort: 0, // 外部端口（后端返回的端口号）
       container,
       isExistContainer,
       screenLoading: false,
-      externalPort: 0, // 外部端口（后端返回的端口号）
-      port: 0, // 内部端口（填写表单填写的端口号）
       skipModalVisible: false
     };
   }
@@ -36,12 +35,14 @@ class App extends Component {
     this.getOSList();
     this.subscribeEvent();
 
-    this.typed = new Typed(".app__desc-content", {
-      strings: [
-        `Want to experiment with something on a Linux distribution? Let's start!`
-      ],
-      typeSpeed: 50
-    });
+    if (document.getElementsByClassName('app__desc-content').length > 0) {
+      this.typed = new Typed(".app__desc-content", {
+        strings: [
+          `Want to experiment with something on a Linux distribution? Let's start!`
+        ],
+        typeSpeed: 50
+      });
+    }
   };
 
   componentWillUnmount = () => {};
@@ -78,11 +79,6 @@ class App extends Component {
     this.setState({ osList });
   };
 
-  handleStartClick = () => {};
-
-  handleClose = () => {
-    this.setState({ open: false });
-  };
 
   handleOSSelect = selectedOS => {
     const osList = [...this.state.osList];
@@ -143,8 +139,6 @@ class App extends Component {
       isExistContainer,
       screenLoading,
       screenText,
-      externalPort,
-      port,
       container
     } = this.state;
     return (
@@ -159,14 +153,12 @@ class App extends Component {
           <h1 className="app__title">
             <span className="app__title-span">
               instantbox
-              {/* <span className="app__title-icon" /> */}
             </span>
           </h1>
           <div className="app__desc">
             <div className="app__text-editor-wrap">
               <div className="app__title-bar">
-                Arch
-                Linux/Debian/CentOS/Defora/Ubuntu/Ubuntu衍生版/Deepin/LineageOS/openSUSE
+                Ubuntu / CentOS / Arch Linux / Debian / Fedora / Alpine
               </div>
               <div className="app__text-body">
                 <span style={{ marginRight: 10 }}>$</span>

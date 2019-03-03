@@ -10,17 +10,6 @@
   &__title-span {
     position: relative;
   }
-  &__title-icon {
-    width: 28px;
-    height: 28px;
-    position: absolute;
-    background-image: url('./assets/terminal.png');
-    background-repeat: no-repeat;
-    background-size: 28px 28px;
-    right: 156px;
-    top: -10px;
-    // animation: rotateInfinite 2s linear infinite;
-  }
   &__desc,
   &__start {
     margin: 25px 0;

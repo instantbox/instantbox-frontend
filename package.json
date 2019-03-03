@@ -2,22 +2,28 @@
   "name": "instantbox",
   "version": "0.2.0",
   "private": true,
+  "engines": {
+    "node": ">= 10.15.2",
+    "npm": ">= 6.8.0"
+  },
   "dependencies": {
-    "antd": "^3.12.1",
+    "antd": "^3.13.6",
     "axios": "^0.18.0",
     "classnames": "^2.2.6",
     "node-sass": "^4.11.0",
-    "react": "^16.6.3",
-    "react-dom": "^16.6.3",
+    "react": "^16.8.3",
+    "react-dom": "^16.8.3",
     "react-loading-screen": "0.0.17",
-    "react-scripts": "2.1.1",
-    "typed.js": "^2.0.9"
+    "react-scripts": "2.1.5",
+    "typed.js": "^2.0.10"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "eslintConfig": {
     "extends": "react-app"

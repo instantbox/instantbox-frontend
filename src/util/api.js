@@ -18,12 +18,12 @@ axios.interceptors.response.use(
   function(res) {
     const data = res.data;
     return data;
-    // 加上 message
-    if (data.statusCode === 1) {
-      return data;
-    } else {
-      throw Error(data.message);
-    }
+    //// 加上 message
+    // if (data.statusCode === 1) {
+    //   return data;
+    // } else {
+    //   throw Error(data.message);
+    // }
   },
   function(err) {
     return Promise.reject(err);

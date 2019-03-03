@@ -1,6 +1,9 @@
 import React, { Fragment } from "react";
-import "./SelectSystemConfig.scss";
 import classNames from "classnames";
+import { withTranslation } from 'react-i18next';
+
+import "./SelectSystemConfig.scss";
+
 import {
   Spin,
   Steps,
@@ -22,12 +25,13 @@ const Option = Select.Option;
 /**
  * Select system configuration
  */
-export class SelectSystemConfig extends React.Component {
+class SelectSystemConfig extends React.Component {
   static propTypes = {};
   static defaultProps = {};
 
   constructor(props) {
     super(props);
+    this.t = props.t;
 
     const currentStep = this.getCurrentStep();
     const { isExistContainer, container } = this.isExistContainer();
@@ -43,19 +47,6 @@ export class SelectSystemConfig extends React.Component {
       container,
       skipModalVisible: false
     };
-
-    this.steps = [
-      {
-        title: "系统",
-        desc: "选择系统",
-        content: ""
-      },
-      {
-        title: "性能参数",
-        desc: "填写系统性能参数",
-        content: ""
-      }
-    ];
   }
 
   getCurrentStep = () => {
@@ -69,7 +60,7 @@ export class SelectSystemConfig extends React.Component {
     }
     containerInfo = JSON.parse(containerInfo);
     const curTime = Math.floor(new Date().getTime() / 1000);
-    // 未过期
+    // Not expired
     if (curTime < containerInfo.timeout) {
       return { isExistContainer: true, container: containerInfo };
     }
@@ -89,14 +80,14 @@ export class SelectSystemConfig extends React.Component {
     const { currentStep, selectsObj, port } = this.state;
     if (currentStep === 0) {
       if (!selectsObj.length) {
-        return message.error("请先选择系统和系统版本");
+        return message.error(this.t('sentence.err-empty-os'));
       }
     }
     if (currentStep === 1) {
       const result = !/\d./.test(port);
 
       if (!port || result) {
-        return message.error("请输入正确格式的端口号");
+        return message.error(this.t('sentence.err-port'));
       }
     }
     this.setState({ currentStep: this.state.currentStep + 1 });
@@ -119,7 +110,7 @@ export class SelectSystemConfig extends React.Component {
     const { validateFields } = this._form;
     validateFields(async (err, values) => {
       if (err) {
-        return message.error("性能参数有误，请重新填写");
+        return message.error(this.t('sentence.err-resources'));
       }
       this.setState({ modalVisible: true });
       this._values = values;
@@ -175,56 +166,65 @@ export class SelectSystemConfig extends React.Component {
         this._shareUrl = res.shareUrl;
       } else {
         this.setState({ okLoading: false });
-        message.error("创建失败，请重试");
+        message.error(this.t('sentence.err-creation'));
       }
     }
   };
 
   generateStepsContent = () => {
-    this.steps[0].content = (
-      <Fragment>
-        {this.props.osList.map((item, index) => {
-          const { selectsObj } = this.state;
-          let osCode;
-          if (selectsObj[index]) {
-            osCode = selectsObj[index].osCode;
-          }
-          const classes = classNames({
-            isSelect: !!selectsObj[index]
-          });
-          return (
-            <Card key={item.label} style={{ width: 200, margin: "10px 25px" }}>
-              <div style={{ textAlign: "center" }}>{item.label}</div>
-              <img
-                style={{
-                  display: "block",
-                  width: 120,
-                  height: 120,
-                  margin: "0 auto"
-                }}
-                className={classes}
-                src={item.logoUrl}
-                alt={item.label}
-              />
-              <Select
-                value={osCode}
-                onChange={value => this.handleSelectChange(value, index)}
-                style={{ width: 182, marginTop: 10 }}
-                placeholder="请选择系统版本"
-              >
-                {item.subList.map(subItem => (
-                  <Option key={subItem.label} value={subItem.osCode}>
-                    {subItem.label}
-                  </Option>
-                ))}
-              </Select>
-            </Card>
-          );
-        })}
-      </Fragment>
-    );
-
-    this.steps[1].content = <SelectForm getForm={this.handleGetForm} />;
+    return [
+      {
+        title: this.t('keyword.os'),
+        desc: this.t('prompt.choose-os'),
+        content: (
+          <Fragment>
+            {this.props.osList.map((item, index) => {
+              const { selectsObj } = this.state;
+              let osCode;
+              if (selectsObj[index]) {
+                osCode = selectsObj[index].osCode;
+              }
+              const classes = classNames({
+                isSelect: !!selectsObj[index]
+              });
+              return (
+                <Card key={item.label} style={{ width: 200, margin: "10px 25px" }}>
+                  <div style={{ textAlign: "center" }}>{item.label}</div>
+                  <img
+                    style={{
+                      display: "block",
+                      width: 120,
+                      height: 120,
+                      margin: "0 auto"
+                    }}
+                    className={classes}
+                    src={item.logoUrl}
+                    alt={item.label}
+                  />
+                  <Select
+                    value={osCode}
+                    onChange={value => this.handleSelectChange(value, index)}
+                    style={{ width: 182, marginTop: 10 }}
+                    placeholder={this.t('prompt.choose-os-version')}
+                  >
+                    {item.subList.map(subItem => (
+                      <Option key={subItem.label} value={subItem.osCode}>
+                        {subItem.label}
+                      </Option>
+                    ))}
+                  </Select>
+                </Card>
+              );
+            })}
+          </Fragment>
+        )
+      },
+      {
+        title: this.t('keyword.resources'),
+        desc: this.t('prompt.choose-resources'),
+        content: <SelectForm getForm={this.handleGetForm} />
+      }
+    ];
   };
 
   getSystemVersion = () => {
@@ -250,13 +250,13 @@ export class SelectSystemConfig extends React.Component {
     } = this.state;
     const { osList } = this.props;
     const { system, version } = this.getSystemVersion();
-    this.generateStepsContent();
+    const steps = this.generateStepsContent();
     return (
       <Spin spinning={osList.length === 0}>
         <div className="select-system-config">
           <div>
             <Steps current={currentStep}>
-              {this.steps.map(step => (
+              {steps.map(step => (
                 <Step
                   key={step.title}
                   title={step.title}
@@ -269,7 +269,7 @@ export class SelectSystemConfig extends React.Component {
           <Divider />
 
           <div className="select-system-config__step-content">
-            {this.steps[currentStep].content}
+            {steps[currentStep].content}
           </div>
           <div
             className="
@@ -280,24 +280,24 @@ export class SelectSystemConfig extends React.Component {
               disabled={currentStep === 0}
               onClick={this.handleCreate}
             >
-              创建
+              {this.t('keyword.create')}
             </Button>
             <Button disabled={currentStep === 1} onClick={this.handleNextStep}>
-              下一步
+              {this.t('keyword.next')}
             </Button>
 
             <Button disabled={currentStep === 0} onClick={this.handlePreStep}>
-              上一步
+              {this.t('keyword.back')}
             </Button>
           </div>
         </div>
         <Modal
-          title="所选系统及系统配置"
+          title={this.t('prompt.selected-os-resources')}
           visible={this.state.modalVisible}
           onOk={this.handleOk}
           onCancel={() => this.setState({ modalVisible: false })}
-          okText="确定"
-          cancelText="取消"
+          okText={this.t('keyword.confirm')}
+          cancelText={this.t('keyword.cancel')}
         >
           <Spin spinning={okLoading}>
             <SystemConfiguration
@@ -315,4 +315,4 @@ export class SelectSystemConfig extends React.Component {
   }
 }
 
-export default SelectSystemConfig;
+export default withTranslation()(SelectSystemConfig);

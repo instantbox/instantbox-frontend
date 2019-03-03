@@ -1,0 +1,62 @@
+{
+  "translation": {
+    "locale": "en",
+    "language": "English",
+    "site": {
+      "heading": "instantbox",
+      "typed": "Want to experiment with something on a Linux distribution? Let's start!"
+    },
+    "keyword": {
+      "notice": "Notice",
+      "confirm": "Confirm",
+      "ok": "Yes",
+      "cancel": "Cancel",
+      "create": "Create",
+      "next": "Next",
+      "back": "Back",
+      "port": "Port",
+      "internal-port": "Port (internal)",
+      "external-port": "Port (public)",
+      "os": "OS",
+      "resources": "Resources",
+      "cpu-core-count": "CPU cores",
+      "memory": "Memory",
+      "memory-in-mb": "Memory (M)",
+      "ttl-in-hours": "Duration (H)"
+    },
+    "prompt": {
+      "created-os": "Your instantbox",
+      "choose-os": "Choose OS",
+      "choose-os-version": "Choose version",
+      "select-os": "Choose OS",
+      "open-os": "Launch webshell",
+      "choose-resources": "Choose resources",
+      "selected-os-resources": "Selected OS",
+      "purge-os": "Purge",
+      "purging": "Purging...",
+      "enter-port": "Enter port",
+      "enter-cpu-core-count": "Enter CPU cores",
+      "enter-memory-in-mb": "Enter memory",
+      "enter-ttl-in-hours": "Enter duration"
+    },
+    "sentence": {
+      "open-webshell": "Instantbox has been created. Launch webshell?",
+      "open-webshell-try-again": "Please click again if webshell encountered an error.",
+      "eg-port": "e.g. 80",
+      "eg-cpu-core-count": "e.g. 1",
+      "eg-memory-in-mb": "e.g. 512",
+      "eg-ttl-in-hours": "e.g. 24",
+      "err-resources": "Validation failed, please re-enter.",
+      "err-creation": "Failed to create instantbox. Please try again later.",
+      "err-port": "Failed to validate port",
+      "msg-port": "Port range: 1-65535",
+      "err-cpu-core-count": "Failed to validate CPU count",
+      "msg-cpu-core-count": "CPU core range：1-4",
+      "err-memory-in-mb": "Failed to validate memory",
+      "msg-memory-in-mb": "Memory range: 1-3584",
+      "err-ttl-in-hours": "Failed to validate duration",
+      "msg-ttl-in-hours": "Duration range: 1-24",
+      "err-empty-os": "Please choose an OS."
+    }
+  }
+}

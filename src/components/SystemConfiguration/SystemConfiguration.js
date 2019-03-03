@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import PropTypes from "prop-types";
-import "./SystemConfiguration.scss";
+import { withTranslation } from 'react-i18next';
 
 import { Divider, Form } from "antd";
 const formItemLayout = {
@@ -11,7 +11,7 @@ const FormItem = Form.Item;
 
 const customLabel = title => {
   return (
-    <span style={{ display: "inline-block", width: 80, textAlign: "left" }}>
+    <span style={{ display: "inline-block", width: 110, textAlign: "right" }}>
       {title}
     </span>
   );
@@ -75,6 +75,11 @@ class SystemConfiguration extends React.Component {
     showExternalPort: false
   };
 
+  constructor(props) {
+    super(props);
+    this.t = props.t;
+  }
+
   getSystemVersion = () => {
     const { system, version } = this.props;
     return (
@@ -99,29 +104,28 @@ class SystemConfiguration extends React.Component {
     
     return (
       <Form>
-        <FormItem label={customLabel("系统")} {...formItemLayout}>
+        <FormItem label={customLabel(this.t('keyword.os'))} {...formItemLayout}>
           {this.getSystemVersion()}
         </FormItem>
-        <FormItem label={customLabel("端口号")} {...formItemLayout}>
+        <FormItem label={customLabel(this.t('keyword.port'))} {...formItemLayout}>
           {innerPort}
         </FormItem>
-        <FormItem label={customLabel("CPU 核数")} {...formItemLayout}>
-          {cpu} 核
+        <FormItem label={customLabel(this.t('keyword.cpu-core-count'))} {...formItemLayout}>
+          {cpu}
         </FormItem>
-        <FormItem label={customLabel("空间大小")} {...formItemLayout}>
+        <FormItem label={customLabel(this.t('keyword.memory'))} {...formItemLayout}>
           {mem} M（{(mem / 1024).toFixed(2)} G）
         </FormItem>
-        <FormItem label={customLabel("使用时长")} {...formItemLayout}>
-          {timeout} 小时
+        <FormItem label={customLabel(this.t('keyword.ttl-in-hours'))} {...formItemLayout}>
+          {timeout}
         </FormItem>
         {showInnerPort && (
-          <FormItem label={customLabel("内部端口号")} {...formItemLayout}>
+          <FormItem label={customLabel(this.t('keyword.internal-port'))} {...formItemLayout}>
             {innerPort}
           </FormItem>
         )}
-
         {showExternalPort && (
-          <FormItem label={customLabel("外部端口号")} {...formItemLayout}>
+          <FormItem label={customLabel(this.t('keyword.external-port'))} {...formItemLayout}>
             {externalPort}
           </FormItem>
         )}
@@ -130,4 +134,4 @@ class SystemConfiguration extends React.Component {
   }
 }
 
-export default Form.create()(SystemConfiguration);
+export default Form.create()(withTranslation()(SystemConfiguration));

@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import { withTranslation } from 'react-i18next';
+
 import "./App.scss";
 import Typed from "typed.js";
 import { getOSList, removeContainerById } from "./util/api";
@@ -8,10 +10,13 @@ import { getItem, rmItem } from "./util/util";
 import { Button, Tooltip, Divider, Card, Modal } from "antd";
 import SelectSystemConfig from "./components/SelectSystemConfig";
 import SystemConfiguration from "./components/SystemConfiguration";
+import LanguageSwitcher from "./components/LanguageSwitcher";
 
 class App extends Component {
   constructor(props) {
     super(props);
+    this.t = props.t;
+
     const { isExistContainer, container } = this.isExistContainer();
 
     this.state = {
@@ -38,7 +43,7 @@ class App extends Component {
     if (document.getElementsByClassName('app__desc-content').length > 0) {
       this.typed = new Typed(".app__desc-content", {
         strings: [
-          `Want to experiment with something on a Linux distribution? Let's start!`
+          this.t('site.typed')
         ],
         typeSpeed: 50
       });
@@ -102,7 +107,7 @@ class App extends Component {
   };
 
   handleSelectAgain = async () => {
-    this.setState({ screenLoading: true, screenText: "删除中..." });
+    this.setState({ screenLoading: true, screenText: this.t('prompt.purging') });
     const { container } = this.state;
     const timestamp = Math.floor(new Date().getTime() / 1000);
     this.p3 = removeContainerById(
@@ -151,13 +156,13 @@ class App extends Component {
         <div className="app">
           <h1 className="app__title">
             <span className="app__title-span">
-              instantbox
+              {this.t('site.heading')}
             </span>
           </h1>
           <div className="app__desc">
             <div className="app__text-editor-wrap">
               <div className="app__title-bar">
-                Ubuntu / CentOS / Arch Linux / Debian / Fedora / Alpine
+                {this.state.osList.map(os => os.label).join(' / ') || this.t('site.heading')}
               </div>
               <div className="app__text-body">
                 <span style={{ marginRight: 10 }}>$</span>
@@ -165,9 +170,10 @@ class App extends Component {
               </div>
             </div>
           </div>
+          <LanguageSwitcher className="app__lang-switcher" i18n={this.props.i18n} />
 
           <Divider style={{ marginTop: 100 }}>
-            {isExistContainer ? "您已创建系统" : "选择系统配置"}
+            {isExistContainer ? this.t('prompt.created-os') : this.t('prompt.select-os')}
           </Divider>
 
           {isExistContainer && (
@@ -191,7 +197,7 @@ class App extends Component {
           <div className="app__os-list">
             {isExistContainer ? (
               <div style={{ marginTop: 20, textAlign: "center" }}>
-                <Tooltip title="若打开的页面报错，请重新点击">
+                <Tooltip title={this.t('sentence.open-webshell-try-again')}>
                   <Button
                     size="large"
                     color="primary"
@@ -204,18 +210,19 @@ class App extends Component {
                     }}
                     style={{ margin: 10 }}
                   >
-                    打开已创建的系统
+                    {this.t('prompt.open-os')}
                   </Button>
                 </Tooltip>
 
                 <Button
                   size="large"
+                  type="danger"
                   color="secondary"
                   variant="outlined"
                   onClick={this.handleSelectAgain}
                   style={{ margin: 10 }}
                 >
-                  重新选择
+                  {this.t('prompt.purge-os')}
                 </Button>
               </div>
             ) : (
@@ -224,21 +231,21 @@ class App extends Component {
           </div>
         </div>
         <Modal
-          title="提示"
+          title={this.t('keyword.notice')}
           visible={this.state.skipModalVisible}
           onOk={() => {
             window.open(this.state.container.shareUrl.replace('http://:', `http://${window.location.hostname}:`));
             this.setState({ skipModalVisible: false });
           }}
-          okText="确定"
-          cancelText="取消"
+          okText={this.t('keyword.ok')}
+          cancelText={this.t('keyword.cancel')}
           onCancel={() => this.setState({ skipModalVisible: false })}
         >
-          <p>系统已创建，是否跳转到系统页面？</p>
+          <p>{this.t('sentence.open-webshell')}</p>
         </Modal>
       </LoadingScreen>
     );
   }
 }
 
-export default App;
+export default withTranslation()(App);

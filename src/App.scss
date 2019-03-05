@@ -18,6 +18,11 @@
   &__start {
     margin: 80px 0;
   }
+  &__lang-switcher {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+  }
   &__text-field {
     margin-top: 8px !important;
     input {

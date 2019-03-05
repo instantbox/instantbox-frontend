@@ -3,7 +3,6 @@ import { getBaseUrl } from "./util";
 
 axios.defaults.baseURL = getBaseUrl();
 
-// 请求拦截
 axios.interceptors.request.use(
   function(config) {
     return config;
@@ -13,12 +12,11 @@ axios.interceptors.request.use(
   }
 );
 
-// 响应拦截
 axios.interceptors.response.use(
   function(res) {
     const data = res.data;
     return data;
-    //// 加上 message
+    //// Return error message
     // if (data.statusCode === 1) {
     //   return data;
     // } else {
@@ -31,8 +29,9 @@ axios.interceptors.response.use(
 );
 
 /**
- * 使 this.setState() 在异步请求中可以取消调用：https://reactjs.org/blog/2015/12/16/ismounted-antipattern.html
- * @param {promise} promise 请求对象
+ * Allow requests to be cancelled
+ * Reference: https://reactjs.org/blog/2015/12/16/ismounted-antipattern.html
+ * @param {promise} promise Request
  */
 export const makeCancelable = promise => {
   let hasCanceled_ = false;
@@ -50,8 +49,11 @@ export const makeCancelable = promise => {
     }
   };
 };
+
+/*
+ * Available API endpoints
+ */
 const apiVersion = "/v2/superinspire";
-// 请求列表
 const requestUrlList = {
   getOSList: `${apiVersion}/getOSList`,
   getOS: `${apiVersion}/getOS`,
@@ -59,14 +61,14 @@ const requestUrlList = {
 };
 
 /**
- * 获取容器列表
+ * Fetch OS list
  */
 export const getOSList = () => {
   return makeCancelable(axios.get(requestUrlList.getOSList));
 };
 
 /**
- * 获取容器跳转的地址
+ * Create container
  */
 export const getOSUrl = (osCode, timeout, cpu = 1, mem = 0.5, port = 80) => {
   return makeCancelable(
@@ -83,7 +85,7 @@ export const getOSUrl = (osCode, timeout, cpu = 1, mem = 0.5, port = 80) => {
 };
 
 /**
- * 移除容器
+ * Remove container
  */
 export const removeContainerById = (
   containerId,

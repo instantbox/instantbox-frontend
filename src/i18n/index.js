@@ -4,6 +4,7 @@ import { initReactI18next } from 'react-i18next';
 const resources = {
   en: require('./locale/en'),
   zh: require('./locale/zh'),
+  fr: require('./locale/fr'),
 }
 
 i18n

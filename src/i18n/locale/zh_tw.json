@@ -1,0 +1,62 @@
+{
+  "translation": {
+    "locale": "zh",
+    "language": "中文",
+    "site": {
+      "heading": "instantbox",
+      "typed": "Want to experiment with something on a Linux distribution? Let's start!"
+    },
+    "keyword": {
+      "notice": "提示",
+      "confirm": "確認",
+      "ok": "是",
+      "cancel": "取消",
+      "create": "建立",
+      "next": "下一步",
+      "back": "上一步",
+      "port": "連接埠",
+      "internal-port": "內部連接埠",
+      "external-port": "外部連接埠",
+      "os": "作業系統",
+      "resources": "資源分配",
+      "cpu-core-count": "CPU 核心",
+      "memory": "記憶體",
+      "memory-in-mb": "記憶體 (M)",
+      "ttl-in-hours": "使用時間 (H)"
+    },
+    "prompt": {
+      "created-os": "您已建立系統",
+      "choose-os": "選擇作業系統",
+      "choose-os-version": "選擇系統版本",
+      "select-os": "選擇系統設定",
+      "open-os": "打開已建立的系統",
+      "choose-resources": "填寫系統資源分配",
+      "selected-os-resources": "所選系統及系統設定",
+      "purge-os": "刪除系統",
+      "purging": "刪除中...",
+      "enter-port": "請輸入連接埠號",
+      "enter-cpu-core-count": "請輸入 CPU 核心數量",
+      "enter-memory-in-mb": "請輸入記憶體大小",
+      "enter-ttl-in-hours": "請輸入使用時間"
+    },
+    "sentence": {
+      "open-webshell": "系統已建立，是否開啟系統頁面？",
+      "open-webshell-try-again": "若開啟的頁面出現錯誤，請重試",
+      "eg-port": "如：80",
+      "eg-cpu-core-count": "如：1",
+      "eg-memory-in-mb": "如：512",
+      "eg-ttl-in-hours": "如：24",
+      "err-resources": "資源分配錯誤，請重新填寫",
+      "err-creation": "建立失敗，請重試",
+      "err-port": "連接埠號格式或範圍錯誤",
+      "msg-port": "連接埠號範圍： 1 ~ 65535",
+      "err-cpu-core-count": "CPU 格式或範圍錯誤",
+      "msg-cpu-core-count": "CPU 範圍：1 ~ 4",
+      "err-memory-in-mb": "記憶體大小格式或範圍錯誤",
+      "msg-memory-in-mb": "記憶體大小範圍：1 ~ 3584",
+      "err-ttl-in-hours": "使用時間格式或範圍錯誤",
+      "msg-ttl-in-hours": "使用時間範圍：1 ~ 24",
+      "err-empty-os": "請先選擇系統和系統版本"
+    }
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "translation": {
+    "locale": "fr",
+    "language": "Français",
+    "site": {
+      "heading": "instantbox",
+      "typed": "Want to experiment with something on a Linux distribution? Let's start!"
+    },
+    "keyword": {
+      "notice": "Notice",
+      "confirm": "Confirmer",
+      "ok": "Oui",
+      "cancel": "Annuler",
+      "create": "Créer",
+      "next": "Suivant",
+      "back": "Retour",
+      "port": "Port",
+      "internal-port": "Port (interne)",
+      "external-port": "Port (public)",
+      "os": "OS",
+      "resources": "Resources",
+      "cpu-core-count": "CPU cores",
+      "memory": "Memoire",
+      "memory-in-mb": "Memoire (M)",
+      "ttl-in-hours": "Durée (H)"
+    },
+    "prompt": {
+      "created-os": "Votre instantbox",
+      "choose-os": "Choisir OS",
+      "choose-os-version": "Choisir version",
+      "select-os": "Choisir OS",
+      "open-os": "Ouvrir Shell",
+      "choose-resources": "Choisir resources",
+      "selected-os-resources": "Sélectionner OS",
+      "purge-os": "Purge",
+      "purging": "Purge...",
+      "enter-port": "Entrer port",
+      "enter-cpu-core-count": "Entrer CPU cores",
+      "enter-memory-in-mb": "Entrer memoire",
+      "enter-ttl-in-hours": "Entrer durée"
+    },
+    "sentence": {
+      "open-webshell": "Instantbox a été créé. Lancer shell?",
+      "open-webshell-try-again": "Veuillez cliquer à nouveau si le webshell a rencontré une erreur.",
+      "eg-port": "Exemple 80",
+      "eg-cpu-core-count": "Exemple 1",
+      "eg-memory-in-mb": "Exemple 512",
+      "eg-ttl-in-hours": "Exemple 24",
+      "err-resources": "La validation a échoué, merci de ressaisir.",
+      "err-creation": "Echec de la création d'instantbox. Veuillez réessayer ultérieurement.",
+      "err-port": "Echec de la validation du port",
+      "msg-port": "Plage de port: 1-65535",
+      "err-cpu-core-count": "Echec de la validation du nombre de processeurs",
+      "msg-cpu-core-count": "Plage CPU：1-4",
+      "err-memory-in-mb": "Echec de la validation de la mémoire",
+      "msg-memory-in-mb": "Plage mémoire: 1-3584",
+      "err-ttl-in-hours": "Echec de la validation de la durée",
+      "msg-ttl-in-hours": "Plage durée: 1-24",
+      "err-empty-os": "Veuillez choisir un OS."
+    }
+  }
+}

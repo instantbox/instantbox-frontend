@@ -5,6 +5,7 @@ const resources = {
   en: require('./locale/en'),
   zh: require('./locale/zh'),
   zh_tw: require('./locale/zh_tw'),
+  fr: require('./locale/fr'),
 }
 
 i18n

@@ -3,7 +3,8 @@ FROM node:lts-alpine AS builder
 WORKDIR /app
 COPY package*.json /app/
 RUN npm ci
-COPY ./ /app/
+COPY ./src/ /app/src/
+COPY ./public/ /app/public/
 RUN npm run build
 
 
